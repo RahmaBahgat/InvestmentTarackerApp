@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class styles extends JFrame{
     public void window () {
+
         setUndecorated(true);
         setLayout(new BorderLayout());
         setTitle("InvestWise");
@@ -69,7 +70,7 @@ public class styles extends JFrame{
         // === Final Frame Setup ===
         add(titleBar, BorderLayout.NORTH);
         setBackground(Color.decode("#f5efe7"));
-        setSize(700, 800);
+        setSize(700, 600);
         setLocationRelativeTo(null);  // Center on screen
         setVisible(true);
     }

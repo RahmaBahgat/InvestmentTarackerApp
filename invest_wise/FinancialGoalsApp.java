@@ -14,43 +14,83 @@ public class FinancialGoalsApp extends styles {
 
     public FinancialGoalsApp() {
         window();
-        setTitle("Invest Wise - Financial Goals");
+        login_signup StyledPanel = new login_signup();
 
-        // Form Panel
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        // === FORM PANEL ===
+        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        formPanel.setBackground(Color.decode("#f5efe7"));
+
+        Font labelFont = new Font("Segoe UI Emoji", Font.PLAIN, 16);
+        Color labelColor = Color.decode("#3e5879");
+
+        JLabel goalLabel = new JLabel("Goal Type:");
+        goalLabel.setFont(labelFont);
+        goalLabel.setForeground(labelColor);
+        formPanel.add(goalLabel);
+
         goalTypeBox = new JComboBox<>(new String[]{"Retirement", "Wealth Accumulation"});
-        amountField = new JTextField();
-        deadlineField = new JTextField();
-        progressField = new JTextField();
-        JButton saveBtn = new JButton("Save Goal");
-        JButton listBtn = new JButton("List Goals");
-
-        formPanel.add(new JLabel("Goal Type:"));
+        goalTypeBox.setPreferredSize(new Dimension(200, 10));
         formPanel.add(goalTypeBox);
-        formPanel.add(new JLabel("Target Amount:"));
+
+        JLabel amountLabel = new JLabel("Target Amount:");
+        amountLabel.setFont(labelFont);
+        amountLabel.setForeground(labelColor);
+        formPanel.add(amountLabel);
+
+        amountField = new JTextField();
+        amountField.setPreferredSize(new Dimension(200, 10));
         formPanel.add(amountField);
-        formPanel.add(new JLabel("Deadline (YYYY-MM-DD):"));
+
+        JLabel deadlineLabel = new JLabel("Deadline (YYYY-MM-DD):");
+        deadlineLabel.setFont(labelFont);
+        deadlineLabel.setForeground(labelColor);
+        formPanel.add(deadlineLabel);
+
+        deadlineField = new JTextField();
+        deadlineField.setPreferredSize(new Dimension(200, 10));
         formPanel.add(deadlineField);
-        formPanel.add(new JLabel("Current Progress:"));
+
+        JLabel progressLabel = new JLabel("Current Progress:");
+        progressLabel.setFont(labelFont);
+        progressLabel.setForeground(labelColor);
+        formPanel.add(progressLabel);
+
+        progressField = new JTextField();
+        progressField.setPreferredSize(new Dimension(200, 10));
         formPanel.add(progressField);
+
+        JButton saveBtn = StyledPanel.styledButton("Save Goal");
+        JButton listBtn = StyledPanel.styledButton("List Goals");
         formPanel.add(saveBtn);
         formPanel.add(listBtn);
 
-        // Text Area for listing
+        // === FORM WRAPPER ===
+        JPanel formWrapper = new JPanel(new GridBagLayout());
+        formWrapper.setBackground(Color.decode("#f5efe7"));
+        formWrapper.add(formPanel);
+
+        // === GOAL LIST PANEL ===
         goalListArea = new JTextArea();
         goalListArea.setEditable(false);
+        goalListArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        goalListArea.setLineWrap(true);
+        goalListArea.setWrapStyleWord(true);
+
         JScrollPane scrollPane = new JScrollPane(goalListArea);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Saved Goals"));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        add(formPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        // === MAIN PANEL ===
+        JPanel mainPanel = StyledPanel.createStyledPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(formWrapper, BorderLayout.NORTH);     // Form stays at top
+        mainPanel.add(scrollPane, BorderLayout.CENTER);     // Goal list fills the rest
 
-        // Load goals from file at startup
+        add(mainPanel, BorderLayout.CENTER); // Add main panel to window
+
+        // Load + Button Events
         loadGoalsFromFile();
-
-        // Save Goal Action
         saveBtn.addActionListener(e -> saveGoal());
-
-        // List Goals Action
         listBtn.addActionListener(e -> listGoals());
     }
 
@@ -60,7 +100,6 @@ public class FinancialGoalsApp extends styles {
         String deadline = deadlineField.getText().trim();
         String progressText = progressField.getText().trim();
 
-        // Validation
         if (amountText.isEmpty() || deadline.isEmpty() || progressText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all required fields.");
             return;
@@ -127,11 +166,7 @@ public class FinancialGoalsApp extends styles {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FinancialGoalsApp().setVisible(true));
-    }
-
-    // Inner Goal class
+    // === Inner Goal Class ===
     static class Goal {
         private String goalType;
         private double targetAmount;
@@ -145,21 +180,24 @@ public class FinancialGoalsApp extends styles {
             this.currentProgress = currentProgress;
         }
 
+        int number = 0;
         @Override
         public String toString() {
-            return "Type: " + goalType +
+            number +=1;
+            return number + "- " +
+                    "Type: " + goalType +
                     ", Target: $" + targetAmount +
                     ", Deadline: " + deadline +
                     ", Progress: $" + currentProgress;
         }
 
         public String toCSV() {
-            return goalType + "," + targetAmount + "," + deadline + "," + currentProgress;
+            return goalType + ", " + targetAmount + ", " + deadline + ", " + currentProgress + "\n";
         }
 
         public static Goal fromCSV(String csv) {
             try {
-                String[] parts = csv.split(",");
+                String[] parts = csv.split(", ");
                 if (parts.length != 4) return null;
                 String type = parts[0];
                 double target = Double.parseDouble(parts[1]);

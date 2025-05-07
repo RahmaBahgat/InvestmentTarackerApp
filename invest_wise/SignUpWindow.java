@@ -9,7 +9,6 @@ public class SignUpWindow extends login_signup {
     SignUpWindow(JFrame loginFrame) {
         styles styleHelper = new styles();
         styleHelper.window();
-        setTitle("Sign Up");
 
         // === Styled Outer Panel ===
         JPanel mainPanel = createStyledPanel();

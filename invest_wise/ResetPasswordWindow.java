@@ -7,7 +7,6 @@ public class ResetPasswordWindow extends login_signup {
     ResetPasswordWindow(JFrame loginFrame) {
         styles styleHelper = new styles();
         styleHelper.window();
-        setTitle("Reset Password");
 
         // Main styled panel
         JPanel mainPanel = createStyledPanel();

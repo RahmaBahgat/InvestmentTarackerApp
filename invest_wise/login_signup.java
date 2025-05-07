@@ -5,14 +5,12 @@ import java.awt.*;
 import java.io.*;
 
 class login_signup extends styles {
-    private static final String USERS_FILE = "src/invest_wise/users.txt";
+    private static final String USERS_FILE = "invest_wise/users.txt";
 
     public login_signup() {
         window();
-        setTitle("Login");
 
         JPanel mainPanel = createStyledPanel();
-
         JPanel inputPanel = createInputPanel();
         JTextField usernameField = (JTextField) inputPanel.getComponent(1);
         JPasswordField passwordField = (JPasswordField) inputPanel.getComponent(3);

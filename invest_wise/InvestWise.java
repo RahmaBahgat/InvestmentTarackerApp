@@ -15,8 +15,8 @@ public class InvestWise extends styles {
         mainPanel.setBackground(Color.decode("#f5efe7"));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;  // Center horizontally
-        gbc.gridy = 0;  // Center vertically
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
         // === Welcome Message ===
