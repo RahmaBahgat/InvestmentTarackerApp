@@ -9,8 +9,8 @@ public class FinancialGoalsApp extends login_signup {
     private JComboBox<String> goalTypeBox;
     private JTextField amountField, deadlineField, progressField;
     private JTextArea goalListArea;
-    private ArrayList<Goal> goals = new ArrayList<>();
-    private final String FILE_NAME = "invest_wise/goals.txt";
+    private static ArrayList<Goal> goals = new ArrayList<>();
+    private static final String FILE_NAME = "invest_wise/goals.txt";
 
     public FinancialGoalsApp() {
         styles styleHelper = new styles();
@@ -95,7 +95,6 @@ public class FinancialGoalsApp extends login_signup {
         listBtn.addActionListener(e -> listGoals());
     }
 
-    // In FinancialGoalsApp.java
     public static ArrayList<Goal> loadGoals(String username) {
         ArrayList<Goal> loadedGoals = new ArrayList<>();
         File file = new File("invest_wise/goals.txt");
@@ -105,7 +104,7 @@ public class FinancialGoalsApp extends login_signup {
             String line;
             while ((line = br.readLine()) != null) {
                 Goal goal = Goal.fromCSV(line);
-                if (goal != null && line.startsWith(username + ",")) {
+                if (goal != null) {
                     loadedGoals.add(goal);
                 }
             }
@@ -115,6 +114,7 @@ public class FinancialGoalsApp extends login_signup {
 
         return loadedGoals;
     }
+
 
     private void saveGoal() {
         String type = (String) goalTypeBox.getSelectedItem();
@@ -214,7 +214,6 @@ public class FinancialGoalsApp extends login_signup {
             JOptionPane.showMessageDialog(this, "Error loading goals from file.");
         }
     }
-
     // === Inner Goal Class ===
     static class Goal {
         private String goalType;
@@ -245,15 +244,16 @@ public class FinancialGoalsApp extends login_signup {
         public static Goal fromCSV(String csv) {
             try {
                 String[] parts = csv.split(", ");
-                if (parts.length != 4) return null;
-                String type = parts[0];
-                double target = Double.parseDouble(parts[1]);
-                String deadline = parts[2];
-                double progress = Double.parseDouble(parts[3]);
-                return new Goal(type, target, deadline, progress);
-            } catch (Exception e) {
-                return null;
-            }
+                if (parts.length == 4) {
+                    String type = parts[0];
+                    double target = Double.parseDouble(parts[1]);
+                    String deadline = parts[2];
+                    double progress = Double.parseDouble(parts[3]);
+                    return new Goal(type, target, deadline, progress);
+                }
+            } catch (Exception ignored) {}
+
+            return null;
         }
     }
 }
