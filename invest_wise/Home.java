@@ -22,8 +22,10 @@ public class Home extends styles{
         gbc.gridy = 2;
         JButton FinancialButton = new JButton("Financial goals");
         JButton zakatButton = new JButton("Zakat Calculator");
+        JButton stockButton = new JButton("Connect Stock Market");
         buttons(FinancialButton);
         buttons(zakatButton);
+        buttons(stockButton);
 
 
         zakatButton.addActionListener(e -> {
@@ -31,7 +33,10 @@ public class Home extends styles{
             setVisible(false);
         });
 
-
+        stockButton.addActionListener(e -> {
+            new StockAccountConnection(Home.this);
+            setVisible(false);
+        });
 
         // Add action to login button
         FinancialButton.addActionListener(new ActionListener() {
@@ -49,6 +54,7 @@ public class Home extends styles{
 
         buttonsPanel.add(FinancialButton);
         buttonsPanel.add(zakatButton);
+        buttonsPanel.add(stockButton);
 
         // Add buttonsPanel to mainPanel
         gbc.gridy = 2;
