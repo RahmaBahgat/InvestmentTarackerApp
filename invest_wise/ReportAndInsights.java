@@ -69,7 +69,7 @@ public class ReportAndInsights extends styles {
         StringBuilder sb = new StringBuilder();
 
         // Load Goals
-        ArrayList<FinancialGoalsApp.Goal> goals = FinancialGoalsApp.loadGoals(currentUser);
+        ArrayList<FinancialGoalsApp.Goal> goals = FinancialGoalsApp.loadGoals(null);
         sb.append("📌 FINANCIAL GOALS\n");
         sb.append("=======================\n");
         if (goals.isEmpty()) {
@@ -107,22 +107,16 @@ public class ReportAndInsights extends styles {
     private void generateReport(ActionEvent e) {
         ArrayList<FinancialGoalsApp.Goal> goals = FinancialGoalsApp.loadGoals(currentUser);
 
-        Object[] options = {"PDF", "Excel", "Cancel"};
-        int choice = JOptionPane.showOptionDialog(this,
-                "Choose format to export:",
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Do you want to export your report as PDF?",
                 "Export Report",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
-                null,
-                options,
-                options[0]);
+                JOptionPane.YES_NO_OPTION);
 
-        if (choice == 0) {
+        if (confirm == JOptionPane.YES_OPTION) {
             FinancialReportGenerator.generatePDFReport(goals, currentUser);
-        } else if (choice == 1) {
-            //FinancialReportGenerator.generateExcelReport(goals, currentUser);
         }
     }
+
 
     private JButton styledButton(String text) {
         JButton button = new JButton(text);
