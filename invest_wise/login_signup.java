@@ -36,7 +36,7 @@ class login_signup extends styles {
                 JOptionPane.showMessageDialog(this, "Login successful!");
 
                 new Home();
-                dispose();  // Close the login window
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid username or password", "Error", JOptionPane.ERROR_MESSAGE);
             }

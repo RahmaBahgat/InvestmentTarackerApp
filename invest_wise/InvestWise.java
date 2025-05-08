@@ -19,22 +19,11 @@ public class InvestWise extends styles {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // === Welcome Message ===
-        JLabel welcomeMessage = new JLabel("Welcome to InvestWise!");
-        welcomeMessage.setFont(new Font("Segoe UI Emoji", Font.BOLD, 20));
-        welcomeMessage.setForeground(Color.decode("#3e5879"));
-        welcomeMessage.setPreferredSize(new Dimension(300, 40));
-
         // === Login Button ===
         gbc.gridy = 2;  // Move the button below the welcome message
         JButton loginButton = new JButton("Login");
-        loginButton.setFont(new Font("Segue UI Emoji", Font.PLAIN, 16));
-        loginButton.setBackground(Color.decode("#3e5879"));
-        loginButton.setForeground(Color.decode("#f5efe7"));
-        loginButton.setPreferredSize(new Dimension(200, 50));
-        loginButton.setFocusPainted(false);
-        loginButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        buttons(loginButton);
 
         // Add action to login button
         loginButton.addActionListener(new ActionListener() {

@@ -74,4 +74,13 @@ public class styles extends JFrame{
         setLocationRelativeTo(null);  // Center on screen
         setVisible(true);
     }
+    public void buttons(JButton b){
+        b.setFont(new Font("Segue UI Emoji", Font.PLAIN, 16));
+        b.setBackground(Color.decode("#3e5879"));
+        b.setForeground(Color.decode("#f5efe7"));
+        b.setPreferredSize(new Dimension(200, 50));
+        b.setFocusPainted(false);
+        b.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
 }

@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
-public class FinancialGoalsApp extends styles {
+public class FinancialGoalsApp extends login_signup {
     private JComboBox<String> goalTypeBox;
     private JTextField amountField, deadlineField, progressField;
     private JTextArea goalListArea;
@@ -13,8 +13,9 @@ public class FinancialGoalsApp extends styles {
     private final String FILE_NAME = "invest_wise/goals.txt";
 
     public FinancialGoalsApp() {
-        window();
-        login_signup StyledPanel = new login_signup();
+        styles styleHelper = new styles();
+        styleHelper.window();
+        styleHelper.dispose();
 
         // === FORM PANEL ===
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
@@ -59,8 +60,8 @@ public class FinancialGoalsApp extends styles {
         progressField.setPreferredSize(new Dimension(200, 10));
         formPanel.add(progressField);
 
-        JButton saveBtn = StyledPanel.styledButton("Save Goal");
-        JButton listBtn = StyledPanel.styledButton("List Goals");
+        JButton saveBtn = styledButton("Save Goal");
+        JButton listBtn = styledButton("List Goals");
         formPanel.add(saveBtn);
         formPanel.add(listBtn);
 
@@ -81,12 +82,12 @@ public class FinancialGoalsApp extends styles {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // === MAIN PANEL ===
-        JPanel mainPanel = StyledPanel.createStyledPanel();
+        JPanel mainPanel = createStyledPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(formWrapper, BorderLayout.NORTH);     // Form stays at top
-        mainPanel.add(scrollPane, BorderLayout.CENTER);     // Goal list fills the rest
+        mainPanel.add(formWrapper, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        add(mainPanel, BorderLayout.CENTER); // Add main panel to window
+        add(mainPanel, BorderLayout.CENTER);
 
         // Load + Button Events
         loadGoalsFromFile();
@@ -113,6 +114,30 @@ public class FinancialGoalsApp extends styles {
                 return;
             }
 
+            // === DATE VALIDATION ===
+            if (!deadline.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                JOptionPane.showMessageDialog(this, "Date format must be YYYY-MM-DD.");
+                return;
+            }
+
+            String[] parts = deadline.split("-");
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int day = Integer.parseInt(parts[2]);
+
+            if (year < 2025) {
+                JOptionPane.showMessageDialog(this, "Year must be 2025 or later.");
+                return;
+            }
+            if (month < 1 || month > 12) {
+                JOptionPane.showMessageDialog(this, "Month must be between 1 and 12.");
+                return;
+            }
+            if (day < 1 || day > 31) {
+                JOptionPane.showMessageDialog(this, "Day must be between 1 and 31.");
+                return;
+            }
+
             Goal goal = new Goal(type, amount, deadline, progress);
             goals.add(goal);
             saveGoalToFile(goal);
@@ -123,8 +148,11 @@ public class FinancialGoalsApp extends styles {
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Please enter valid numeric values.");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Unexpected error: " + ex.getMessage());
         }
     }
+
 
     private void listGoals() {
         if (goals.isEmpty()) {
@@ -134,7 +162,7 @@ public class FinancialGoalsApp extends styles {
 
         StringBuilder sb = new StringBuilder();
         for (Goal g : goals) {
-            sb.append(g).append("\n");
+            sb.append(g);
         }
         goalListArea.setText(sb.toString());
     }
@@ -180,11 +208,9 @@ public class FinancialGoalsApp extends styles {
             this.currentProgress = currentProgress;
         }
 
-        int number = 0;
         @Override
         public String toString() {
-            number +=1;
-            return number + "- " +
+            return  "⇛" +
                     "Type: " + goalType +
                     ", Target: $" + targetAmount +
                     ", Deadline: " + deadline +
@@ -192,7 +218,7 @@ public class FinancialGoalsApp extends styles {
         }
 
         public String toCSV() {
-            return goalType + ", " + targetAmount + ", " + deadline + ", " + currentProgress + "\n";
+            return goalType + ", " + targetAmount + ", " + deadline + ", " + currentProgress;
         }
 
         public static Goal fromCSV(String csv) {
