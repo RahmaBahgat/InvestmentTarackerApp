@@ -6,6 +6,7 @@ import java.io.*;
 
 class login_signup extends styles {
     private static final String USERS_FILE = "invest_wise/users.txt";
+    private static String currentUser = "";
 
     public login_signup() {
         window();
@@ -33,8 +34,8 @@ class login_signup extends styles {
             String user = usernameField.getText();
             String pass = new String(passwordField.getPassword());
             if (validateLogin(user, pass)) {
+                currentUser = user; // ← Set current user after successful login
                 JOptionPane.showMessageDialog(this, "Login successful!");
-
                 new Home();
                 dispose();
             } else {
@@ -55,7 +56,9 @@ class login_signup extends styles {
 
         add(centerWrapper, BorderLayout.CENTER);
     }
-
+    public static String getCurrentUser() {
+        return currentUser;
+    }
     // === Shared Components ===
     public JPanel createStyledPanel() {
         JPanel panel = new JPanel();
