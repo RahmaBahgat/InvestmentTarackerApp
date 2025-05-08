@@ -23,9 +23,11 @@ public class Home extends styles{
         JButton FinancialButton = new JButton("Financial goals");
         JButton zakatButton = new JButton("Zakat Calculator");
         JButton stockButton = new JButton("Connect Stock Market");
+        JButton reportButton = new JButton("Report & Insights");
         buttons(FinancialButton);
         buttons(zakatButton);
         buttons(stockButton);
+        buttons(reportButton);
 
 
         zakatButton.addActionListener(e -> {
@@ -37,6 +39,7 @@ public class Home extends styles{
             new StockAccountConnection(Home.this);
             setVisible(false);
         });
+        reportButton.addActionListener(e -> new ReportAndInsights(Home.this));
 
         // Add action to login button
         FinancialButton.addActionListener(new ActionListener() {
@@ -49,12 +52,14 @@ public class Home extends styles{
 
         // === Buttons Panel ===
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0)); // 20 px horizontal gap
+        buttonsPanel.setPreferredSize(new Dimension(600, 400)); // adjust as needed
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonsPanel.setBackground(Color.decode("#f5efe7")); // Match background
 
         buttonsPanel.add(FinancialButton);
         buttonsPanel.add(zakatButton);
         buttonsPanel.add(stockButton);
+        buttonsPanel.add(reportButton);
 
         // Add buttonsPanel to mainPanel
         gbc.gridy = 2;
