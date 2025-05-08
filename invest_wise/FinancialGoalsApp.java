@@ -95,6 +95,27 @@ public class FinancialGoalsApp extends login_signup {
         listBtn.addActionListener(e -> listGoals());
     }
 
+    // In FinancialGoalsApp.java
+    public static ArrayList<Goal> loadGoals(String username) {
+        ArrayList<Goal> loadedGoals = new ArrayList<>();
+        File file = new File("invest_wise/goals.txt");
+        if (!file.exists()) return loadedGoals;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Goal goal = Goal.fromCSV(line);
+                if (goal != null && line.startsWith(username + ",")) {
+                    loadedGoals.add(goal);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error loading goals for report.");
+        }
+
+        return loadedGoals;
+    }
+
     private void saveGoal() {
         String type = (String) goalTypeBox.getSelectedItem();
         String amountText = amountField.getText().trim();
