@@ -111,7 +111,6 @@ public class FinancialGoals extends login_signup {
         return loadedGoals;
     }
 
-
     private void saveGoal() {
         String type = (String) goalTypeBox.getSelectedItem();
         String amountText = amountField.getText().trim();
@@ -179,7 +178,7 @@ public class FinancialGoals extends login_signup {
 
         StringBuilder sb = new StringBuilder();
         for (Goal g : goals) {
-            sb.append(g);
+            sb.append(g).append("\n");
         }
         goalListArea.setText(sb.toString());
     }
