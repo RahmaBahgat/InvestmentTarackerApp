@@ -4,9 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class Home extends styles{
-    public Home(){
+public class Home extends styles {
+    // Declare the assets list as a class member
+    private ArrayList<Asset> assets = new ArrayList<>();
+
+    public Home() {
         window();
         // === Main Panel ===
         JPanel mainPanel = new JPanel();
@@ -18,18 +22,24 @@ public class Home extends styles{
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // === Login Button ===
+        // === Buttons ===
         gbc.gridy = 2;
-        JButton FinancialButton = new JButton("Financial goals");
+        JButton financialButton = new JButton("Financial goals");
         JButton zakatButton = new JButton("Zakat Calculator");
         JButton stockButton = new JButton("Connect Stock Market");
         JButton reportButton = new JButton("Report & Insights");
-        buttons(FinancialButton);
+        JButton addAssetsButton = new JButton("Add Assets");
+        JButton editRemoveButton = new JButton("Edit/Remove Assets");
+
+        // Style buttons
+        buttons(financialButton);
         buttons(zakatButton);
         buttons(stockButton);
         buttons(reportButton);
+        buttons(addAssetsButton);
+        buttons(editRemoveButton);
 
-
+        // === Button Actions ===
         zakatButton.addActionListener(e -> {
             new ZakatCalculator(Home.this);
             setVisible(false);
@@ -39,10 +49,20 @@ public class Home extends styles{
             new StockAccountConnection(Home.this);
             setVisible(false);
         });
+
         reportButton.addActionListener(e -> new ReportAndInsights(Home.this));
 
-        // Add action to login button
-        FinancialButton.addActionListener(new ActionListener() {
+        addAssetsButton.addActionListener(e -> {
+            this.setVisible(false);
+            new AddAssets(this, assets).setVisible(true);  // Pass both Home and assets
+        });
+
+        editRemoveButton.addActionListener(e -> {
+            this.setVisible(false);
+            new EditRemoveAssets(this, assets).setVisible(true);
+        });
+
+        financialButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new FinancialGoalsApp();
@@ -52,21 +72,26 @@ public class Home extends styles{
 
         // === Buttons Panel ===
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setPreferredSize(new Dimension(600, 400)); // adjust as needed
+        buttonsPanel.setPreferredSize(new Dimension(600, 400));
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonsPanel.setBackground(Color.decode("#f5efe7")); // Match background
+        buttonsPanel.setBackground(Color.decode("#f5efe7"));
 
-        buttonsPanel.add(FinancialButton);
+        buttonsPanel.add(financialButton);
         buttonsPanel.add(zakatButton);
         buttonsPanel.add(stockButton);
         buttonsPanel.add(reportButton);
+        buttonsPanel.add(addAssetsButton);
+        buttonsPanel.add(editRemoveButton);
 
         // Add buttonsPanel to mainPanel
         gbc.gridy = 2;
         mainPanel.add(buttonsPanel, gbc);
 
-
         // === Final Frame Setup ===
         add(mainPanel, BorderLayout.CENTER);
+    }
+
+    public void updateAssets(ArrayList<Asset> updatedAssets) {
+        this.assets = new ArrayList<>(updatedAssets);
     }
 }
