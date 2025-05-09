@@ -128,6 +128,7 @@ public class AddAssets extends styles {
 
     private void goBack() {
         this.setVisible(false);
+        home.setVisible(true);
     }
 
     private void addAsset() {
