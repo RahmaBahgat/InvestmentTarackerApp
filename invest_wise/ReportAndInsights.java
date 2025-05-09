@@ -69,13 +69,13 @@ public class ReportAndInsights extends styles {
         StringBuilder sb = new StringBuilder();
 
         // Load Goals
-        ArrayList<FinancialGoalsApp.Goal> goals = FinancialGoalsApp.loadGoals(null);
+        ArrayList<FinancialGoals.Goal> goals = FinancialGoals.loadGoals(null);
         sb.append("📌 FINANCIAL GOALS\n");
         sb.append("=======================\n");
         if (goals.isEmpty()) {
             sb.append("No goals found.\n\n");
         } else {
-            for (FinancialGoalsApp.Goal g : goals) {
+            for (FinancialGoals.Goal g : goals) {
                 sb.append(g.toString()).append("\n\n");
             }
         }
@@ -105,7 +105,7 @@ public class ReportAndInsights extends styles {
     }
 
     private void generateReport(ActionEvent e) {
-        ArrayList<FinancialGoalsApp.Goal> goals = FinancialGoalsApp.loadGoals(currentUser);
+        ArrayList<FinancialGoals.Goal> goals = FinancialGoals.loadGoals(currentUser);
 
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Do you want to export your report as PDF?",

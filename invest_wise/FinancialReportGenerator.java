@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class FinancialReportGenerator {
 
-    public static void generatePDFReport(ArrayList<FinancialGoalsApp.Goal> goals, String username) {
+    public static void generatePDFReport(ArrayList<FinancialGoals.Goal> goals, String username) {
         if (goals == null || goals.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No goals found to generate a report.");
             return;
@@ -33,7 +33,7 @@ public class FinancialReportGenerator {
             document.add(new Paragraph("📌 Financial Goals Summary", headingFont));
 
             // Goals List
-            for (FinancialGoalsApp.Goal g : goals) {
+            for (FinancialGoals.Goal g : goals) {
                 document.add(new Paragraph("- " + g.toString(), bodyFont));
             }
 

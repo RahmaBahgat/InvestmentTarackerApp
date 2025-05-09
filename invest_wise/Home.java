@@ -65,7 +65,7 @@ public class Home extends styles {
         financialButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new FinancialGoalsApp();
+                new FinancialGoals();
                 setVisible(false);
             }
         });

@@ -5,18 +5,14 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
-public class FinancialGoalsApp extends login_signup {
+public class FinancialGoals extends login_signup {
     private JComboBox<String> goalTypeBox;
     private JTextField amountField, deadlineField, progressField;
     private JTextArea goalListArea;
     private static ArrayList<Goal> goals = new ArrayList<>();
     private static final String FILE_NAME = "invest_wise/goals.txt";
 
-    public FinancialGoalsApp() {
-        styles styleHelper = new styles();
-        styleHelper.window();
-        styleHelper.dispose();
-
+    public FinancialGoals() {
         // === FORM PANEL ===
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
         formPanel.setBackground(Color.decode("#f5efe7"));

@@ -7,9 +7,6 @@ import java.util.regex.*;
 public class SignUpWindow extends login_signup {
 
     SignUpWindow(JFrame loginFrame) {
-        styles styleHelper = new styles();
-        styleHelper.window();
-
         // === Styled Outer Panel ===
         JPanel mainPanel = createStyledPanel();
         JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10));
