@@ -7,17 +7,37 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Provides functionality for editing and removing financial assets.
+ * Allows users to modify asset details and remove assets from their portfolio.
+ */
 public class EditRemoveAssets extends styles {
+    /** List component for displaying assets */
     private JList<Asset> assetList;
+    /** Model for managing the asset list data */
     private DefaultListModel<Asset> listModel;
+    /** Button for editing selected asset */
     private JButton editButton;
+    /** Button for removing selected asset */
     private JButton removeButton;
+    /** Button for returning to previous screen */
     private JButton backButton;
+    /** Label for displaying messages */
     private JLabel messageLabel;
+    /** List of user's assets */
     private ArrayList<Asset> assets;
+    /** Reference to the main Home window */
     private Home home;
+    /** File path for storing asset data */
     private static final String ASSETS_FILE = "invest_wise/assets.txt";
 
+    /**
+     * Constructs the edit/remove assets window.
+     * Initializes the UI components and loads existing assets.
+     *
+     * @param home Reference to the main Home window
+     * @param assets List of existing assets
+     */
     public EditRemoveAssets(Home home, ArrayList<Asset> assets) {
         this.home = home;
         this.assets = new ArrayList<>(assets);
@@ -83,6 +103,10 @@ public class EditRemoveAssets extends styles {
         add(mainPanel);
     }
 
+    /**
+     * Loads assets from the assets file.
+     * Updates the list model with loaded assets.
+     */
     private void loadAssetsFromFile() {
         File file = new File(ASSETS_FILE);
         if (!file.exists()) {
@@ -106,6 +130,10 @@ public class EditRemoveAssets extends styles {
         }
     }
 
+    /**
+     * Updates the list model with current assets.
+     * Refreshes the display of assets in the list.
+     */
     private void updateListModel() {
         listModel.clear();
         for (Asset asset : assets) {
@@ -113,6 +141,10 @@ public class EditRemoveAssets extends styles {
         }
     }
 
+    /**
+     * Saves the current list of assets to the assets file.
+     * Writes each asset in CSV format.
+     */
     private void saveAssetsToFile() {
         try (FileWriter fw = new FileWriter(ASSETS_FILE);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -125,7 +157,10 @@ public class EditRemoveAssets extends styles {
         }
     }
 
-
+    /**
+     * Opens a dialog to edit the selected asset.
+     * Allows modification of asset type, name, and value.
+     */
     private void editAsset() {
         Asset selected = assetList.getSelectedValue();
         if (selected == null) {
@@ -191,6 +226,10 @@ public class EditRemoveAssets extends styles {
         editDialog.setVisible(true);
     }
 
+    /**
+     * Removes the selected asset from the list.
+     * Prompts for confirmation before removal.
+     */
     private void removeAsset() {
         Asset selected = assetList.getSelectedValue();
         if (selected == null) {
@@ -209,18 +248,42 @@ public class EditRemoveAssets extends styles {
         }
     }
 
+    /**
+     * Displays a message with specified text and color.
+     *
+     * @param text The message to display
+     * @param color The color to use for the message
+     */
     private void showMessage(String text, Color color) {
         messageLabel.setText(text);
         messageLabel.setForeground(color);
     }
 
+    /**
+     * Returns to the previous screen.
+     * Updates the home window with current assets.
+     */
     private void goBack() {
         this.setVisible(false);
         home.updateAssets(assets); // Pass the updated list back to Home
         home.setVisible(true);
     }
 
+    /**
+     * Custom renderer for displaying assets in the list.
+     * Formats each asset entry with consistent styling.
+     */
     private class AssetListRenderer extends DefaultListCellRenderer {
+        /**
+         * Renders an asset in the list with custom formatting.
+         *
+         * @param list The list being rendered
+         * @param value The asset to render
+         * @param index The index of the asset
+         * @param isSelected Whether the asset is selected
+         * @param cellHasFocus Whether the cell has focus
+         * @return A component configured to display the asset
+         */
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {

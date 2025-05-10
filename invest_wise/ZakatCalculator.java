@@ -9,11 +9,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.FileOutputStream;
 
-
+/**
+ * Provides functionality for calculating Zakat (Islamic almsgiving) based on various assets.
+ * Allows users to input different types of assets and generates Zakat calculations.
+ */
 public class ZakatCalculator extends styles {
+    /** Text area for displaying calculation results */
     private JTextArea resultArea;
+    /** Input fields for different types of assets */
     private JTextField goldField, cashField, stockField, realEstateField, otherField;
 
+    /**
+     * Constructs the Zakat calculator window with input fields and calculation buttons.
+     *
+     * @param previousFrame The frame to return to when closing this window
+     */
     public ZakatCalculator(JFrame previousFrame) {
         window();
         setTitle("Zakat Calculator");
@@ -85,12 +95,24 @@ public class ZakatCalculator extends styles {
         setVisible(true);
     }
 
+    /**
+     * Creates a styled button with consistent formatting.
+     *
+     * @param text The text to display on the button
+     * @return A configured JButton with standard styling
+     */
     private JButton styledButton(String text) {
         JButton button = new JButton(text);
         buttons(button); // Call inherited method from styles class
         return button;
     }
 
+    /**
+     * Calculates Zakat based on the input asset values.
+     * Computes total assets and applies the 2.5% Zakat rate.
+     *
+     * @param e The action event that triggered the calculation
+     */
     private void calculateZakat(ActionEvent e) {
         try {
             double gold = parseInput(goldField.getText());
@@ -119,6 +141,12 @@ public class ZakatCalculator extends styles {
         }
     }
 
+    /**
+     * Generates a PDF report of the Zakat calculation.
+     * Creates a formatted document with the calculation results.
+     *
+     * @param e The action event that triggered the PDF generation
+     */
     private void generatePDFReport(ActionEvent e) {
         try {
             Document document = new Document();
@@ -144,10 +172,25 @@ public class ZakatCalculator extends styles {
         }
     }
 
+    /**
+     * Parses a string input into a double value.
+     * Returns 0 if the input is empty.
+     *
+     * @param text The text to parse
+     * @return The parsed double value, or 0 if empty
+     */
     private double parseInput(String text) {
         return text.isEmpty() ? 0 : Double.parseDouble(text);
     }
 
+    /**
+     * Creates a styled label with specified text, font, and color.
+     *
+     * @param text The text to display
+     * @param font The font to use
+     * @param color The text color
+     * @return A configured JLabel with the specified styling
+     */
     private JLabel styledLabel(String text, Font font, Color color) {
         JLabel label = new JLabel(text);
         label.setFont(font);
@@ -155,6 +198,13 @@ public class ZakatCalculator extends styles {
         return label;
     }
 
+    /**
+     * Creates a styled text field with specified font and size.
+     *
+     * @param font The font to use
+     * @param size The preferred size of the field
+     * @return A configured JTextField with the specified styling
+     */
     private JTextField styledTextField(Font font, Dimension size) {
         JTextField field = new JTextField();
         field.setFont(font);

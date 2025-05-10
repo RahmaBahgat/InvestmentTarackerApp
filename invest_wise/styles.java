@@ -3,7 +3,15 @@ package invest_wise;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Base class that provides common styling and window functionality for all frames in the application.
+ * Extends JFrame and implements a custom title bar with minimize and close buttons.
+ */
 public class styles extends JFrame{
+    /**
+     * Initializes and configures the main window with a custom title bar.
+     * Sets up the window properties, custom title bar with controls, and basic styling.
+     */
     public void window () {
 
         setUndecorated(true);
@@ -74,6 +82,13 @@ public class styles extends JFrame{
         setLocationRelativeTo(null);  // Center on screen
         setVisible(true);
     }
+
+    /**
+     * Applies consistent styling to a button.
+     * Sets font, colors, size, and hover effects for a uniform look across the application.
+     *
+     * @param b The button to style
+     */
     public void buttons(JButton b){
         b.setFont(new Font("Segue UI Emoji", Font.PLAIN, 16));
         b.setBackground(Color.decode("#3e5879"));

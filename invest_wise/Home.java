@@ -6,12 +6,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+/**
+ * The main dashboard of the InvestWise application.
+ * Provides access to various financial management features and displays user's assets.
+ */
 public class Home extends styles {
+    /** List of user's financial assets */
     private ArrayList<Asset> assets = new ArrayList<>();
+    /** Layout manager for switching between different views */
     private CardLayout cardLayout;
+    /** Main panel containing all card views */
     private JPanel mainCardPanel;
+    /** Risk assessment screen component */
     private RiskAssessmentScreen riskAssessmentScreen;
 
+    /**
+     * Constructs the home dashboard with navigation buttons and initializes the card layout.
+     * Sets up the main interface and risk assessment screen.
+     */
     public Home() {
         window();
         setTitle("InvestWise - Home");
@@ -31,6 +43,12 @@ public class Home extends styles {
         add(mainCardPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Creates the main home view panel with navigation buttons.
+     * Each button provides access to different financial management features.
+     *
+     * @return A JPanel containing the main navigation interface
+     */
     private JPanel createHomeView() {
         JPanel homePanel = new JPanel(new GridBagLayout());
         homePanel.setBackground(Color.decode("#f5efe7"));
@@ -121,11 +139,20 @@ public class Home extends styles {
         return homePanel;
     }
 
+    /**
+     * Switches the view back to the home screen.
+     * Updates the window title to reflect the current view.
+     */
     public void showHomeView() {
         cardLayout.show(mainCardPanel, "HOME");
         setTitle("InvestWise - Home");
     }
 
+    /**
+     * Updates the list of user's financial assets.
+     *
+     * @param updatedAssets The new list of assets to replace the current ones
+     */
     public void updateAssets(ArrayList<Asset> updatedAssets) {
         this.assets = new ArrayList<>(updatedAssets);
     }

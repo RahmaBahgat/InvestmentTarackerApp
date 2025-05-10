@@ -7,13 +7,28 @@ import java.util.ArrayList;
 import org.jfree.chart.*;
 import org.jfree.data.general.DefaultPieDataset;
 
+/**
+ * Provides risk assessment functionality for the user's financial portfolio.
+ * Analyzes assets and generates risk assessment reports with visualizations.
+ */
 public class RiskAssessmentScreen {
+    /** Main panel containing risk assessment interface */
     private JPanel riskPanel;
+    /** Reference to the main Home window */
     private Home home;
+    /** Helper class for styling components */
     private styles styleHelper;
+    /** List of user's assets for risk analysis */
     private ArrayList<Asset> assets;
+    /** File path for storing asset data */
     private static final String ASSETS_FILE = "invest_wise/assets.txt";
 
+    /**
+     * Constructs the risk assessment screen with necessary components.
+     *
+     * @param home Reference to the main Home window
+     * @param styleHelper Helper class for styling components
+     */
     public RiskAssessmentScreen(Home home, styles styleHelper) {
         this.home = home;
         this.styleHelper = styleHelper;
@@ -21,6 +36,11 @@ public class RiskAssessmentScreen {
         initializeUI();
     }
 
+    /**
+     * Checks if there are any assets available for risk assessment.
+     *
+     * @return true if assets exist and are not empty, false otherwise
+     */
     public static boolean checkAssetsExist() {
         File file = new File(ASSETS_FILE);
         if (!file.exists() || file.length() == 0) {
@@ -34,10 +54,19 @@ public class RiskAssessmentScreen {
         }
     }
 
+    /**
+     * Gets the main risk assessment panel.
+     *
+     * @return The JPanel containing the risk assessment interface
+     */
     public JPanel getRiskPanel() {
         return riskPanel;
     }
 
+    /**
+     * Refreshes the risk assessment data and updates the display.
+     * Reloads assets and recreates the interface.
+     */
     public void refreshData() {
         this.assets = loadAssetsFromFile();
         riskPanel.removeAll();
@@ -46,6 +75,10 @@ public class RiskAssessmentScreen {
         riskPanel.repaint();
     }
 
+    /**
+     * Initializes the user interface components for risk assessment.
+     * Sets up the main panel and creates the interface layout.
+     */
     private void initializeUI() {
         riskPanel = new JPanel(new BorderLayout(10, 10));
         riskPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -53,6 +86,10 @@ public class RiskAssessmentScreen {
         createMainInterface();
     }
 
+    /**
+     * Creates the main interface components for risk assessment display.
+     * Includes risk score, chart, tips, and navigation controls.
+     */
     private void createMainInterface() {
         // Risk score display
         int riskScore = calculateRiskScore();
@@ -81,6 +118,11 @@ public class RiskAssessmentScreen {
         riskPanel.add(backButton, BorderLayout.PAGE_END);
     }
 
+    /**
+     * Loads asset data from the assets file.
+     *
+     * @return ArrayList of assets loaded from the file
+     */
     private ArrayList<Asset> loadAssetsFromFile() {
         ArrayList<Asset> loadedAssets = new ArrayList<>();
         File file = new File(ASSETS_FILE);
@@ -103,6 +145,12 @@ public class RiskAssessmentScreen {
         return loadedAssets;
     }
 
+    /**
+     * Calculates the overall risk score for the portfolio.
+     * Weights different asset types based on their risk levels.
+     *
+     * @return Risk score from 0 to 100
+     */
     private int calculateRiskScore() {
         if (assets.isEmpty()) return 0;
 
@@ -121,6 +169,11 @@ public class RiskAssessmentScreen {
         return (int) ((totalRisk / getTotalPortfolioValue()) * 100);
     }
 
+    /**
+     * Creates a pie chart showing the distribution of assets.
+     *
+     * @return JPanel containing the asset distribution chart
+     */
     private JPanel createRiskChart() {
         DefaultPieDataset dataset = new DefaultPieDataset();
         for (Asset asset : assets) {
@@ -131,16 +184,33 @@ public class RiskAssessmentScreen {
         return new ChartPanel(chart);
     }
 
+    /**
+     * Generates risk mitigation tips based on the risk score.
+     *
+     * @param score The calculated risk score
+     * @return String containing risk mitigation advice
+     */
     private String getMitigationTips(int score) {
         if (score > 70) return "High Risk! Consider adding bonds/gold (20-30%).";
         else if (score > 40) return "Moderate Risk. Rebalance with stable assets.";
         else return "Low Risk. Maintain current allocation.";
     }
 
+    /**
+     * Calculates the total value of all assets in the portfolio.
+     *
+     * @return The sum of all asset values
+     */
     private double getTotalPortfolioValue() {
         return assets.stream().mapToDouble(a -> a.value).sum();
     }
 
+    /**
+     * Determines the color to display based on the risk score.
+     *
+     * @param score The calculated risk score
+     * @return Color representing the risk level (Red for high, Orange for medium, Green for low)
+     */
     private Color getRiskColor(int score) {
         if (score > 70) return Color.RED;
         else if (score > 40) return Color.ORANGE;

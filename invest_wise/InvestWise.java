@@ -5,8 +5,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The main entry point for the InvestWise application.
+ * This class extends the styles class and creates the initial login window.
+ */
 public class InvestWise extends styles {
 
+    /**
+     * Constructs the main InvestWise window with a login button.
+     * Initializes the UI components and sets up the main panel.
+     */
     public InvestWise() {
         window();
         // === Main Panel ===
@@ -41,6 +49,12 @@ public class InvestWise extends styles {
         add(mainPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * The main method that launches the InvestWise application.
+     * Uses SwingUtilities.invokeLater to ensure thread safety for GUI creation.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(InvestWise::new);
     }

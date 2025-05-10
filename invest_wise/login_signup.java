@@ -4,10 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
+/**
+ * Handles user authentication and registration functionality.
+ * Provides a login interface and manages user data persistence.
+ */
 class login_signup extends styles {
+    /** File path for storing user data */
     private static final String USERS_FILE = "invest_wise/users.txt";
+    /** Currently logged in user's username */
     private static String currentUser = "";
 
+    /**
+     * Constructs the login window with input fields and authentication buttons.
+     * Initializes the UI components and sets up event handlers.
+     */
     public login_signup() {
         window();
 
@@ -56,10 +66,22 @@ class login_signup extends styles {
 
         add(centerWrapper, BorderLayout.CENTER);
     }
+
+    /**
+     * Gets the username of the currently logged in user.
+     *
+     * @return The username of the current user
+     */
     public static String getCurrentUser() {
         return currentUser;
     }
+
     // === Shared Components ===
+    /**
+     * Creates a styled panel with consistent formatting.
+     *
+     * @return A configured JPanel with standard styling
+     */
     public JPanel createStyledPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -68,6 +90,11 @@ class login_signup extends styles {
         return panel;
     }
 
+    /**
+     * Creates the input panel containing username and password fields.
+     *
+     * @return A JPanel containing styled input fields
+     */
     public JPanel createInputPanel() {
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         inputPanel.setBackground(Color.decode("#f5efe7"));
@@ -96,6 +123,12 @@ class login_signup extends styles {
         return inputPanel;
     }
 
+    /**
+     * Creates a styled button with consistent formatting.
+     *
+     * @param text The text to display on the button
+     * @return A configured JButton with standard styling
+     */
     public JButton styledButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
@@ -112,6 +145,13 @@ class login_signup extends styles {
 
     // === File Operations ===
 
+    /**
+     * Validates user login credentials against stored user data.
+     *
+     * @param username The username to validate
+     * @param password The password to validate
+     * @return true if credentials are valid, false otherwise
+     */
     private boolean validateLogin(String username, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
             String line;
@@ -127,6 +167,12 @@ class login_signup extends styles {
         return false;
     }
 
+    /**
+     * Checks if a username already exists in the user database.
+     *
+     * @param username The username to check
+     * @return true if the username exists, false otherwise
+     */
     boolean userExists(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
             String line;
@@ -140,6 +186,16 @@ class login_signup extends styles {
         return false;
     }
 
+    /**
+     * Adds a new user to the user database.
+     *
+     * @param username The new user's username
+     * @param password The new user's password
+     * @param fullName The new user's full name
+     * @param email The new user's email
+     * @param phone The new user's phone number
+     * @param balance The new user's initial balance
+     */
     void addUser(String username, String password, String fullName, String email, String phone, String balance) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE, true))) {
             writer.write(String.join(",", username, password, fullName, email, phone, balance));
@@ -149,6 +205,12 @@ class login_signup extends styles {
         }
     }
 
+    /**
+     * Updates a user's password in the user database.
+     *
+     * @param username The username of the user whose password to update
+     * @param newPassword The new password to set
+     */
     void updatePassword(String username, String newPassword) {
         File inputFile = new File(USERS_FILE);
         File tempFile = new File("src/invest_wise/temp_users.txt");
@@ -179,12 +241,22 @@ class login_signup extends styles {
     }
 
     // === Function to Open Sign-Up Window ===
+    /**
+     * Opens the sign-up window and hides the login window.
+     *
+     * @param loginFrame The current login window to hide
+     */
     private void openSignUpWindow(JFrame loginFrame) {
         loginFrame.setVisible(false);
         new SignUpWindow(loginFrame);
     }
 
     // === Function to Open Reset Password Window ===
+    /**
+     * Opens the password reset window and hides the login window.
+     *
+     * @param loginFrame The current login window to hide
+     */
     private void openResetPasswordWindow(JFrame loginFrame) {
         loginFrame.setVisible(false);
         new ResetPasswordWindow(loginFrame);

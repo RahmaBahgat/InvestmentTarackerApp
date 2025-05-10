@@ -4,8 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.regex.*;
 
+/**
+ * Provides the user registration interface for the InvestWise application.
+ * Handles user input validation and account creation.
+ */
 public class SignUpWindow extends login_signup {
 
+    /**
+     * Constructs the sign-up window with input fields and validation.
+     *
+     * @param loginFrame The frame to return to when closing this window
+     */
     SignUpWindow(JFrame loginFrame) {
         // === Styled Outer Panel ===
         JPanel mainPanel = createStyledPanel();
@@ -123,8 +132,12 @@ public class SignUpWindow extends login_signup {
         setVisible(true);
     }
 
-    // Validation Methods
-
+    /**
+     * Validates an email address format.
+     *
+     * @param email The email address to validate
+     * @return true if the email format is valid, false otherwise
+     */
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailRegex);
@@ -132,22 +145,58 @@ public class SignUpWindow extends login_signup {
         return matcher.matches();
     }
 
+    /**
+     * Validates a phone number format.
+     * Must start with "01" and be 14 digits.
+     *
+     * @param phone The phone number to validate
+     * @return true if the phone number format is valid, false otherwise
+     */
     private boolean isValidPhone(String phone) {
         return phone.startsWith("01") && phone.length() == 14 && phone.matches("\\d+");
     }
 
+    /**
+     * Validates a password format.
+     * Must contain letters, numbers, and special characters.
+     *
+     * @param password The password to validate
+     * @return true if the password format is valid, false otherwise
+     */
     private boolean isValidPassword(String password) {
         return password.matches(".*[a-zA-Z].*") && password.matches(".*\\d.*") && password.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
     }
 
+    /**
+     * Validates a balance amount format.
+     * Must be a numeric value.
+     *
+     * @param balance The balance to validate
+     * @return true if the balance format is valid, false otherwise
+     */
     private boolean isValidBalance(String balance) {
         return balance.matches("\\d+");
     }
 
+    /**
+     * Validates a full name format.
+     * Must contain only letters and spaces.
+     *
+     * @param fullName The full name to validate
+     * @return true if the full name format is valid, false otherwise
+     */
     private boolean isValidFullName(String fullName) {
         return fullName.matches("[a-zA-Z ]+");
     }
 
+    /**
+     * Creates a styled label with specified text, font, and color.
+     *
+     * @param text The text to display
+     * @param font The font to use
+     * @param color The text color
+     * @return A configured JLabel with the specified styling
+     */
     private JLabel styledLabel(String text, Font font, Color color) {
         JLabel label = new JLabel(text);
         label.setFont(font);
@@ -155,6 +204,13 @@ public class SignUpWindow extends login_signup {
         return label;
     }
 
+    /**
+     * Creates a styled text field with specified font and size.
+     *
+     * @param font The font to use
+     * @param size The preferred size of the field
+     * @return A configured JTextField with the specified styling
+     */
     private JTextField styledTextField(Font font, Dimension size) {
         JTextField field = new JTextField();
         field.setFont(font);
@@ -162,6 +218,13 @@ public class SignUpWindow extends login_signup {
         return field;
     }
 
+    /**
+     * Creates a styled password field with specified font and size.
+     *
+     * @param font The font to use
+     * @param size The preferred size of the field
+     * @return A configured JPasswordField with the specified styling
+     */
     private JPasswordField styledPasswordField(Font font, Dimension size) {
         JPasswordField field = new JPasswordField();
         field.setFont(font);

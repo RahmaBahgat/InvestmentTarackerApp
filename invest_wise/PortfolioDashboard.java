@@ -5,7 +5,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Displays a mock portfolio dashboard for connected stock trading accounts.
+ * Shows portfolio value, daily gains, and top holdings.
+ */
 public class PortfolioDashboard extends styles {
+    /**
+     * Constructs the portfolio dashboard window.
+     * Displays portfolio information and navigation controls.
+     *
+     * @param previousFrame The frame to return to when closing this window
+     * @param platform The name of the connected trading platform
+     */
     public PortfolioDashboard(JFrame previousFrame, String platform) {
         window();
         setTitle("Portfolio - " + platform);
@@ -41,6 +52,12 @@ public class PortfolioDashboard extends styles {
         setVisible(true);
     }
 
+    /**
+     * Creates a styled button with consistent formatting.
+     *
+     * @param text The text to display on the button
+     * @return A configured JButton with standard styling
+     */
     private JButton styledButton(String text) {
         JButton button = new JButton(text);
         buttons(button); // From styles.java

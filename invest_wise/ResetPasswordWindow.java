@@ -3,7 +3,18 @@ package invest_wise;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Provides functionality for resetting user passwords.
+ * Allows users to update their password by providing their username and new password.
+ * Extends login_signup to inherit common styling and functionality.
+ */
 public class ResetPasswordWindow extends login_signup {
+    /**
+     * Constructs the password reset window with input fields and control buttons.
+     * Initializes the UI components and sets up event handlers for password reset.
+     *
+     * @param loginFrame The frame to return to when closing this window
+     */
     ResetPasswordWindow(JFrame loginFrame) {
         // Main styled panel
         JPanel mainPanel = createStyledPanel();
