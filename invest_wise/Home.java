@@ -64,15 +64,8 @@ public class Home extends styles {
             new EditRemoveAssets(this, assets).setVisible(true);
         });
         riskAssessmentButton.addActionListener(e -> {
-            if (assets.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Please add assets first to assess risk",
-                        "No Assets",
-                        JOptionPane.WARNING_MESSAGE);
-            } else {
-                setVisible(false);
-                new RiskAssessmentScreen(this, assets).setVisible(true);
-            }
+            setVisible(false);
+            new RiskAssessmentScreen(this).setVisible(true);
         });
 
         financialButton.addActionListener(new ActionListener() {
