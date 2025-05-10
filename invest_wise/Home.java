@@ -7,15 +7,33 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Home extends styles {
-    // Declare the assets list as a class member
     private ArrayList<Asset> assets = new ArrayList<>();
+    private CardLayout cardLayout;
+    private JPanel mainCardPanel;
+    private RiskAssessmentScreen riskAssessmentScreen;
 
     public Home() {
         window();
-        // === Main Panel ===
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBackground(Color.decode("#f5efe7"));
+        setTitle("InvestWise - Home");
+
+        // Initialize card layout
+        cardLayout = new CardLayout();
+        mainCardPanel = new JPanel(cardLayout);
+        mainCardPanel.setBackground(Color.decode("#f5efe7"));
+
+        // Create home view
+        JPanel homeView = createHomeView();
+        mainCardPanel.add(homeView, "HOME");
+
+        riskAssessmentScreen = new RiskAssessmentScreen(this, this);
+        mainCardPanel.add(riskAssessmentScreen.getRiskPanel(), "RISK_ASSESSMENT");
+
+        add(mainCardPanel, BorderLayout.CENTER);
+    }
+
+    private JPanel createHomeView() {
+        JPanel homePanel = new JPanel(new GridBagLayout());
+        homePanel.setBackground(Color.decode("#f5efe7"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -56,24 +74,30 @@ public class Home extends styles {
 
         addAssetsButton.addActionListener(e -> {
             this.setVisible(false);
-            new AddAssets(this, assets).setVisible(true);  // Pass both Home and assets
+            new AddAssets(this, assets).setVisible(true);
         });
 
         editRemoveButton.addActionListener(e -> {
             this.setVisible(false);
             new EditRemoveAssets(this, assets).setVisible(true);
         });
+
         riskAssessmentButton.addActionListener(e -> {
-            setVisible(false);
-            new RiskAssessmentScreen(this).setVisible(true);
+            if (!RiskAssessmentScreen.checkAssetsExist()) {
+                JOptionPane.showMessageDialog(Home.this,
+                        "Please add assets first to assess risk",
+                        "No Assets",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                riskAssessmentScreen.refreshData();
+                cardLayout.show(mainCardPanel, "RISK_ASSESSMENT");
+                setTitle("InvestWise - Risk Assessment");
+            }
         });
 
-        financialButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new FinancialGoals();
-                setVisible(false);
-            }
+        financialButton.addActionListener(e -> {
+            new FinancialGoals();
+            setVisible(false);
         });
 
         // === Buttons Panel ===
@@ -90,13 +114,16 @@ public class Home extends styles {
         buttonsPanel.add(editRemoveButton);
         buttonsPanel.add(riskAssessmentButton);
 
-
-        // Add buttonsPanel to mainPanel
+        // Add buttonsPanel to homePanel
         gbc.gridy = 2;
-        mainPanel.add(buttonsPanel, gbc);
+        homePanel.add(buttonsPanel, gbc);
 
-        // === Final Frame Setup ===
-        add(mainPanel, BorderLayout.CENTER);
+        return homePanel;
+    }
+
+    public void showHomeView() {
+        cardLayout.show(mainCardPanel, "HOME");
+        setTitle("InvestWise - Home");
     }
 
     public void updateAssets(ArrayList<Asset> updatedAssets) {
