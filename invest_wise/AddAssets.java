@@ -3,6 +3,7 @@ package invest_wise;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
@@ -16,27 +17,34 @@ public class AddAssets extends styles {
     private JTextArea assetListArea;
     private JLabel messageLabel;
     private JLabel totalValueLabel;
-    private JPanel buttonPanel;
-
     private ArrayList<Asset> assets;
     private DecimalFormat currencyFormat = new DecimalFormat("$#,##0.00");
     private Home home;
+    private static final String ASSETS_FILE = "invest_wise/assets.txt";
 
     public AddAssets(Home home, ArrayList<Asset> assets) {
         this.home = home;
         this.assets = assets;
-        window();
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new GridLayout(6, 1, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        this.window();
+        loadAssetsFromFile(); // Load assets from file on startup
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(Color.decode("#f5efe7"));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // === FORM PANEL ===
+        JPanel formPanel = new JPanel(new GridLayout(6, 1, 10, 10));
         formPanel.setBackground(Color.decode("#f5efe7"));
 
-        // Initialize components
+        Font labelFont = new Font("Segoe UI Emoji", Font.PLAIN, 16);
+        Color labelColor = Color.decode("#3e5879");
+
+        // Form components
         assetTypeCombo = new JComboBox<>(new String[]{"Stocks", "Real Estate", "Crypto", "Gold", "Bonds", "Mutual Funds"});
         assetNameField = new JTextField();
         assetValueField = new JTextField();
 
-        // Set input verification for asset value field
+        // Input verification
         assetValueField.setInputVerifier(new InputVerifier() {
             @Override
             public boolean verify(JComponent input) {
@@ -51,36 +59,43 @@ public class AddAssets extends styles {
             }
         });
 
-        // Add tooltips
-        assetTypeCombo.setToolTipText("Select the type of asset you want to add");
-        assetNameField.setToolTipText("Enter the name or identifier of the asset");
-        assetValueField.setToolTipText("Enter the current value of the asset");
-
-        formPanel.add(new JLabel("Select Asset Type:"));
+        // Add form components with styled labels
+        addStyledLabel(formPanel, "Select Asset Type:", labelFont, labelColor);
         formPanel.add(assetTypeCombo);
-        formPanel.add(new JLabel("Enter Asset Name:"));
+        addStyledLabel(formPanel, "Enter Asset Name:", labelFont, labelColor);
         formPanel.add(assetNameField);
-        formPanel.add(new JLabel("Enter Asset Value:"));
+        addStyledLabel(formPanel, "Enter Asset Value:", labelFont, labelColor);
         formPanel.add(assetValueField);
 
-        // Initialize buttons
-        addButton = new JButton("Add Asset");
-        clearButton = new JButton("Clear All");
-        backButton = new JButton("Back");
+        // === FORM WRAPPER ===
+        JPanel formWrapper = new JPanel(new GridBagLayout());
+        formWrapper.setBackground(Color.decode("#f5efe7"));
+        formWrapper.add(formPanel);
 
-        // Style buttons
-        buttons(addButton);
-        buttons(clearButton);
-        buttons(backButton);
+        // === BUTTON PANEL ===
+        addButton = createStyledButton("Add Asset");
+        clearButton = createStyledButton("Clear All");
+        backButton = createStyledButton("Back");
 
-        // Button panel
-        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(Color.decode("#f5efe7"));
         buttonPanel.add(backButton);
         buttonPanel.add(addButton);
         buttonPanel.add(clearButton);
 
-        messageLabel = new JLabel("");
+        // === ASSET LIST AREA ===
+        assetListArea = new JTextArea();
+        assetListArea.setEditable(false);
+        assetListArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        assetListArea.setLineWrap(true);
+        assetListArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(assetListArea);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Your Assets"));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        // === MESSAGE PANEL ===
+        messageLabel = new JLabel(" ");
         messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         messageLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 12));
 
@@ -89,46 +104,94 @@ public class AddAssets extends styles {
         totalValueLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
         totalValueLabel.setForeground(Color.decode("#3e5879"));
 
-        assetListArea = new JTextArea(8, 30);
-        assetListArea.setEditable(false);
-        assetListArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        JScrollPane scrollPane = new JScrollPane(assetListArea);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Your Assets"));
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        messagePanel.setBackground(Color.decode("#f5efe7"));
+        messagePanel.add(messageLabel, BorderLayout.NORTH);
+        messagePanel.add(totalValueLabel, BorderLayout.SOUTH);
 
-        // Add action listeners
-        addButton.addActionListener(e -> addAsset());
-        clearButton.addActionListener(e -> clearAssets());
+        // === CENTER CONTENT PANEL ===
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 20));
+        centerPanel.setBackground(Color.decode("#f5efe7"));
+        centerPanel.add(formWrapper, BorderLayout.NORTH);
+        centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        centerPanel.add(messagePanel, BorderLayout.SOUTH);
+
+        // === MAIN LAYOUT ===
+        mainPanel.add(centerPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Event listeners
+        addButton.addActionListener(e -> {
+            addAsset();
+            saveAssetsToFile();
+        });
+
+        clearButton.addActionListener(e -> {
+            clearAssets();
+            saveAssetsToFile();
+        });
+
         backButton.addActionListener(e -> goBack());
 
-        // Add key listener for Enter key
         assetValueField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     addAsset();
+                    saveAssetsToFile();
                 }
             }
         });
 
-        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
-        centerPanel.setBackground(Color.decode("#f5efe7"));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
-        centerPanel.add(buttonPanel, BorderLayout.NORTH);
-        centerPanel.add(messageLabel, BorderLayout.CENTER);
-        centerPanel.add(totalValueLabel, BorderLayout.SOUTH);
-
-        JPanel southPanel = new JPanel(new BorderLayout());
-        southPanel.setBackground(Color.decode("#f5efe7"));
-        southPanel.add(centerPanel, BorderLayout.NORTH);
-        southPanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(formPanel, BorderLayout.CENTER);
-        add(southPanel, BorderLayout.SOUTH);
+        updateAssetList(); // Update UI with loaded assets
     }
 
-    private void goBack() {
-        this.setVisible(false);
-        home.setVisible(true);
+    private void loadAssetsFromFile() {
+        File file = new File(ASSETS_FILE);
+        if (!file.exists()) return;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            assets.clear(); // Clear existing assets before loading
+            while ((line = br.readLine()) != null) {
+                Asset asset = Asset.fromCSV(line);
+                if (asset != null) {
+                    assets.add(asset);
+                }
+            }
+        } catch (IOException e) {
+            showMessage("Error loading assets from file.", Color.RED);
+        }
+    }
+
+    private void saveAssetsToFile() {
+        try (FileWriter fw = new FileWriter(ASSETS_FILE);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+            for (Asset asset : assets) {
+                bw.write(asset.toCSV());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            showMessage("Error saving assets to file.", Color.RED);
+        }
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        button.setBackground(Color.decode("#3e5879"));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        return button;
+    }
+
+    private void addStyledLabel(JPanel panel, String text, Font font, Color color) {
+        JLabel label = new JLabel(text);
+        label.setFont(font);
+        label.setForeground(color);
+        panel.add(label);
     }
 
     private void addAsset() {
@@ -161,18 +224,20 @@ public class AddAssets extends styles {
         }
     }
 
-    private void showMessage(String text, Color color) {
-        messageLabel.setText(text);
-        messageLabel.setForeground(color);
-    }
-
     private void updateAssetList() {
         StringBuilder sb = new StringBuilder();
         double totalValue = 0;
 
-        for (Asset asset : assets) {
-            sb.append(asset.toString()).append("\n");
-            totalValue += asset.value;
+        if (assets.isEmpty()) {
+            sb.append("No assets found.");
+        } else {
+            for (Asset asset : assets) {
+                sb.append("⇛ Type: ").append(asset.type)
+                        .append(", Name: ").append(asset.name)
+                        .append(", Value: ").append(currencyFormat.format(asset.value))
+                        .append("\n");
+                totalValue += asset.value;
+            }
         }
 
         assetListArea.setText(sb.toString());
@@ -185,28 +250,13 @@ public class AddAssets extends styles {
         showMessage("All assets cleared.", Color.BLUE);
     }
 
-//    private void goBack() {
-//        // Implement navigation back to previous screen
-//        showMessage("Back button clicked - implement navigation", Color.BLUE);
-//    }
+    private void showMessage(String text, Color color) {
+        messageLabel.setText(text);
+        messageLabel.setForeground(color);
+    }
 
-//    static class Asset {
-//        String type;
-//        String name;
-//        double value;
-//
-//        public Asset(String type, String name, double value) {
-//            this.type = type;
-//            this.name = name;
-//            this.value = value;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return String.format("%-12s %-20s %10s",
-//                    type + ":",
-//                    name,
-//                    "$" + String.format("%,.2f", value));
-//        }
-//    }
+    private void goBack() {
+        this.setVisible(false);
+        home.setVisible(true);
+    }
 }
