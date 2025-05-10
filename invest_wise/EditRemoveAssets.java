@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 
 public class EditRemoveAssets extends styles {
@@ -13,21 +14,24 @@ public class EditRemoveAssets extends styles {
     private JButton removeButton;
     private JButton backButton;
     private JLabel messageLabel;
-
     private ArrayList<Asset> assets;
     private Home home;
+    private static final String ASSETS_FILE = "invest_wise/assets.txt";
 
     public EditRemoveAssets(Home home, ArrayList<Asset> assets) {
         this.home = home;
-        this.assets = new ArrayList<>(assets); // Create a copy for safety
+        this.assets = new ArrayList<>(assets);
+
+        // Initialize listModel
+        listModel = new DefaultListModel<>();
 
         window();
         setTitle("InvestWise - Edit/Remove Assets");
 
-        // Initialize components
-        listModel = new DefaultListModel<>();
-        updateListModel();
+        // load assets from file
+        loadAssetsFromFile();
 
+        // Initialize components
         assetList = new JList<>(listModel);
         assetList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         assetList.setCellRenderer(new AssetListRenderer());
@@ -46,8 +50,16 @@ public class EditRemoveAssets extends styles {
         messageLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         // Add action listeners
-        editButton.addActionListener(e -> editAsset());
-        removeButton.addActionListener(e -> removeAsset());
+        editButton.addActionListener(e -> {
+            editAsset();
+            saveAssetsToFile();
+        });
+
+        removeButton.addActionListener(e -> {
+            removeAsset();
+            saveAssetsToFile();
+        });
+
         backButton.addActionListener(e -> goBack());
 
         // Layout
@@ -71,12 +83,48 @@ public class EditRemoveAssets extends styles {
         add(mainPanel);
     }
 
+    private void loadAssetsFromFile() {
+        File file = new File(ASSETS_FILE);
+        if (!file.exists()) {
+            // If file doesn't exist, just use the assets passed in constructor
+            updateListModel();
+            return;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            assets.clear(); // Clear existing assets before loading
+            while ((line = br.readLine()) != null) {
+                Asset asset = Asset.fromCSV(line);
+                if (asset != null) {
+                    assets.add(asset);
+                }
+            }
+            updateListModel();
+        } catch (IOException e) {
+            showMessage("Error loading assets from file.", Color.RED);
+        }
+    }
+
     private void updateListModel() {
         listModel.clear();
         for (Asset asset : assets) {
             listModel.addElement(asset);
         }
     }
+
+    private void saveAssetsToFile() {
+        try (FileWriter fw = new FileWriter(ASSETS_FILE);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+            for (Asset asset : assets) {
+                bw.write(asset.toCSV());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            showMessage("Error saving assets to file.", Color.RED);
+        }
+    }
+
 
     private void editAsset() {
         Asset selected = assetList.getSelectedValue();
@@ -172,7 +220,6 @@ public class EditRemoveAssets extends styles {
         home.setVisible(true);
     }
 
-    // Custom renderer for better display of assets in the list
     private class AssetListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value,
