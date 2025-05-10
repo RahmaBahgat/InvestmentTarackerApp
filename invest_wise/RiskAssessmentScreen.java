@@ -7,38 +7,26 @@ import java.util.ArrayList;
 import org.jfree.chart.*;
 import org.jfree.data.general.DefaultPieDataset;
 
-public class RiskAssessmentScreen extends styles {
+public class RiskAssessmentScreen {
     private JPanel riskPanel;
-    private JLabel riskScoreLabel;
-    private JButton backButton;
     private Home home;
+    private styles styleHelper;
     private ArrayList<Asset> assets;
     private static final String ASSETS_FILE = "invest_wise/assets.txt";
 
-    public RiskAssessmentScreen(Home home) {
+    public RiskAssessmentScreen(Home home, styles styleHelper) {
         this.home = home;
-
-        // First check if assets file exists and has content
-        if (!checkAssetsExist()) {
-            JOptionPane.showMessageDialog(home,  // Use home as parent
-                    "Please add assets first to assess risk",
-                    "No Assets",
-                    JOptionPane.WARNING_MESSAGE);
-            return;  // Exit constructor without showing window
-        }
-
-        // Only proceed if assets exist
+        this.styleHelper = styleHelper;
         this.assets = loadAssetsFromFile();
         initializeUI();
     }
 
-    private boolean checkAssetsExist() {
+    public static boolean checkAssetsExist() {
         File file = new File(ASSETS_FILE);
         if (!file.exists() || file.length() == 0) {
             return false;
         }
 
-        // Quick check if file has valid content
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             return br.readLine() != null;
         } catch (IOException e) {
@@ -46,20 +34,29 @@ public class RiskAssessmentScreen extends styles {
         }
     }
 
+    public JPanel getRiskPanel() {
+        return riskPanel;
+    }
+
+    public void refreshData() {
+        this.assets = loadAssetsFromFile();
+        riskPanel.removeAll();
+        createMainInterface();
+        riskPanel.revalidate();
+        riskPanel.repaint();
+    }
+
     private void initializeUI() {
-        window();
-        setTitle("InvestWise - Risk Assessment");
+        riskPanel = new JPanel(new BorderLayout(10, 10));
+        riskPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        riskPanel.setBackground(Color.decode("#f5efe7"));
         createMainInterface();
     }
 
     private void createMainInterface() {
-        riskPanel = new JPanel(new BorderLayout(10, 10));
-        riskPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        riskPanel.setBackground(Color.decode("#f5efe7"));
-
         // Risk score display
         int riskScore = calculateRiskScore();
-        riskScoreLabel = new JLabel("Your Risk Score: " + riskScore + "/100", SwingConstants.CENTER);
+        JLabel riskScoreLabel = new JLabel("Your Risk Score: " + riskScore + "/100", SwingConstants.CENTER);
         riskScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         riskScoreLabel.setForeground(getRiskColor(riskScore));
 
@@ -73,17 +70,15 @@ public class RiskAssessmentScreen extends styles {
         tipsArea.setWrapStyleWord(true);
 
         // Back button
-        backButton = new JButton("Back");
-        buttons(backButton);
-        backButton.addActionListener(e -> goBack());
+        JButton backButton = new JButton("Back");
+        styleHelper.buttons(backButton); // Now using the instance method
+        backButton.addActionListener(e -> home.showHomeView());
 
         // Layout
         riskPanel.add(riskScoreLabel, BorderLayout.NORTH);
         riskPanel.add(chartPanel, BorderLayout.CENTER);
         riskPanel.add(new JScrollPane(tipsArea), BorderLayout.SOUTH);
         riskPanel.add(backButton, BorderLayout.PAGE_END);
-
-        add(riskPanel);
     }
 
     private ArrayList<Asset> loadAssetsFromFile() {
@@ -99,7 +94,7 @@ public class RiskAssessmentScreen extends styles {
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(null,
                     "Error reading assets file",
                     "File Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -150,10 +145,5 @@ public class RiskAssessmentScreen extends styles {
         if (score > 70) return Color.RED;
         else if (score > 40) return Color.ORANGE;
         else return Color.GREEN;
-    }
-
-    private void goBack() {
-        this.setVisible(false);
-        home.setVisible(true);
     }
 }
