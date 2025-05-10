@@ -1,5 +1,40 @@
 # InvestWise - Financial Management Application
 
+## 👥 Project Authors
+
+### 🎓 Author 1
+**Name:** Rawda Raafat Ramadan  
+**ID:** 20231067  
+**Contributions:**
+- ZakatCalculator.java
+- FinancialReportGenerator.java
+- PortfolioDashboard.java
+- ReportAndInsights.java
+- StockAccountConnection.java
+
+### 🎓 Author 2
+**Name:** Rahma Bahgat Muhammad  
+**ID:** 20231056  
+**Contributions:**
+- AddAssets.java
+- Asset.java
+- EditRemoveAssets.java
+- RiskAssessmentScreen.java
+
+### 🎓 Author 3
+**Name:** Bassant Tarek Abdulrahman  
+**ID:** 20231037  
+**Contributions:**
+- FinancialGoals.java
+- InvestWise.java
+- ResetPasswordWindow.java
+- SignUpWindow.java
+- login_signup.java
+- styles.java
+- users.txt
+
+---
+
 InvestWise is a comprehensive financial management application that provides a wide range of features for managing personal finances, tracking assets, and making informed investment decisions.
 
 ## Features
