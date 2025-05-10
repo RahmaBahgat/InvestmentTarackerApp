@@ -5,12 +5,26 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+/**
+ * Provides functionality for connecting stock trading accounts to the InvestWise application.
+ * Handles user authentication and account linking for various trading platforms.
+ */
 public class StockAccountConnection extends styles {
+    /** Input field for email/username */
     private JTextField emailField, otpField;
+    /** Input field for password */
     private JPasswordField passwordField;
+    /** Dropdown for selecting trading platform */
     private JComboBox<String> platformBox;
+    /** Currently logged in user's username */
     private String currentUser;
 
+    /**
+     * Constructs the stock account connection window.
+     * Initializes the UI components and handles user authentication.
+     *
+     * @param previousFrame The frame to return to when closing this window
+     */
     public StockAccountConnection(JFrame previousFrame) {
         currentUser = login_signup.getCurrentUser();
         if (currentUser == null || currentUser.isEmpty()) {
@@ -73,6 +87,12 @@ public class StockAccountConnection extends styles {
         setVisible(true);
     }
 
+    /**
+     * Handles the account connection process.
+     * Validates input fields and saves account information.
+     *
+     * @param e The action event that triggered the connection
+     */
     private void handleConnection(ActionEvent e) {
         String platform = (String) platformBox.getSelectedItem();
         String email = emailField.getText().trim();
@@ -108,6 +128,12 @@ public class StockAccountConnection extends styles {
         }
     }
 
+    /**
+     * Creates a styled button with consistent formatting.
+     *
+     * @param text The text to display on the button
+     * @return A configured JButton with standard styling
+     */
     private JButton styledButton(String text) {
         JButton button = new JButton(text);
         buttons(button); // From styles.java

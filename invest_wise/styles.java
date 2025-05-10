@@ -4,60 +4,53 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Base class for styling and window management in the InvestWise application.
- * Provides common styling methods and a custom window frame with title bar.
- * All other windows in the application extend this class to maintain consistent styling.
+ * Base class that provides common styling and window functionality for all frames in the application.
+ * Extends JFrame and implements a custom title bar with minimize and close buttons.
  */
-public class styles extends JFrame {
+public class styles extends JFrame{
     /**
-     * Initializes and configures the main application window.
-     * Creates a custom title bar with application icon, title, and control buttons.
-     * Sets up the window properties and styling.
+     * Initializes and configures the main window with a custom title bar.
+     * Sets up the window properties, custom title bar with controls, and basic styling.
      */
-    public void window() {
-        // Remove default window decorations for custom title bar
+    public void window () {
+
         setUndecorated(true);
         setLayout(new BorderLayout());
         setTitle("InvestWise");
 
-        // === Custom Title Bar Setup ===
+        // === Custom Title Bar ===
         JPanel titleBar = new JPanel();
-        titleBar.setBackground(Color.decode("#3e5879")); // Dark blue background
+        titleBar.setBackground(Color.decode("#3e5879"));
         titleBar.setLayout(new BorderLayout());
 
-        // Create title label with application icon
+        // Title + Icon on the left
         JLabel titleLabel = new JLabel("  Simple Invest Wise App");
-        titleLabel.setForeground(Color.decode("#f5efe7")); // Light beige text
+        titleLabel.setForeground(Color.decode("#f5efe7"));
         titleLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
-        
-        // Load and scale the application icon
         ImageIcon rawIcon = new ImageIcon(getClass().getResource("/invest_wise/investing.png"));
         Image img = rawIcon.getImage();
         Image scaled = img.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         titleLabel.setIcon(new ImageIcon(scaled));
         titleLabel.setIconTextGap(10);
 
-        // Create panel for title and icon
         JPanel titleTextPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         titleTextPanel.setOpaque(false);
         titleTextPanel.add(titleLabel);
 
-        // Create window control buttons
+        // Buttons: Minimize, Maximize, Close
         JButton closeButton = new JButton("❌");
         JButton minimizeButton = new JButton("➖");
 
-        // Style the control buttons
+        // Style buttons
         JButton[] titleButtons = {minimizeButton, closeButton};
         for (JButton b : titleButtons) {
             b.setFocusPainted(false);
             b.setForeground(Color.WHITE);
-            b.setBackground(Color.decode("#213555")); // Darker blue for buttons
+            b.setBackground(Color.decode("#213555"));
             b.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
             b.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 10));
             b.setOpaque(true);
             b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            
-            // Add hover effects for buttons
             b.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     b.setBackground(Color.decode("#213555"));
@@ -69,39 +62,37 @@ public class styles extends JFrame {
             });
         }
 
-        // Add functionality to control buttons
+        // Button actions
         closeButton.addActionListener(e -> System.exit(0));
         minimizeButton.addActionListener(e -> setState(Frame.ICONIFIED));
 
-        // Create panel for control buttons
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 2));
         controlPanel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         controlPanel.setOpaque(false);
         controlPanel.add(minimizeButton);
         controlPanel.add(closeButton);
 
-        // Assemble the title bar
+        // Add to titleBar
         titleBar.add(titleTextPanel, BorderLayout.WEST);
         titleBar.add(controlPanel, BorderLayout.EAST);
-
-        // === Final Window Configuration ===
+        // === Final Frame Setup ===
         add(titleBar, BorderLayout.NORTH);
-        setBackground(Color.decode("#f5efe7")); // Light beige background
+        setBackground(Color.decode("#f5efe7"));
         setSize(700, 600);
-        setLocationRelativeTo(null);  // Center window on screen
+        setLocationRelativeTo(null);  // Center on screen
         setVisible(true);
     }
 
     /**
-     * Applies consistent styling to buttons throughout the application.
-     * Sets font, colors, size, and hover effects for a unified look.
-     * 
+     * Applies consistent styling to a button.
+     * Sets font, colors, size, and hover effects for a uniform look across the application.
+     *
      * @param b The button to style
      */
-    public void buttons(JButton b) {
+    public void buttons(JButton b){
         b.setFont(new Font("Segue UI Emoji", Font.PLAIN, 16));
-        b.setBackground(Color.decode("#3e5879")); // Dark blue background
-        b.setForeground(Color.decode("#f5efe7")); // Light beige text
+        b.setBackground(Color.decode("#3e5879"));
+        b.setForeground(Color.decode("#f5efe7"));
         b.setPreferredSize(new Dimension(200, 50));
         b.setFocusPainted(false);
         b.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));

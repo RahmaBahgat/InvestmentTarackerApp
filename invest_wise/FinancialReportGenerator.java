@@ -8,8 +8,19 @@ import javax.swing.*;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
+/**
+ * Provides functionality for generating PDF financial reports.
+ * Creates formatted reports with financial goals and user information.
+ */
 public class FinancialReportGenerator {
 
+    /**
+     * Generates a PDF financial report for a user.
+     * Creates a formatted document with financial goals and user details.
+     *
+     * @param goals The list of financial goals to include in the report
+     * @param username The username of the user to generate the report for
+     */
     public static void generatePDFReport(ArrayList<FinancialGoals.Goal> goals, String username) {
         if (goals == null || goals.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No goals found to generate a report.");

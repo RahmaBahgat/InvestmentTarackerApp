@@ -5,13 +5,26 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Provides functionality for managing financial goals and tracking progress.
+ * Allows users to set, track, and manage their financial objectives.
+ */
 public class FinancialGoals extends login_signup {
+    /** Combo box for selecting goal type */
     private JComboBox<String> goalTypeBox;
+    /** Text fields for goal details */
     private JTextField amountField, deadlineField, progressField;
+    /** Text area for displaying goal list */
     private JTextArea goalListArea;
+    /** List of user's financial goals */
     private static ArrayList<Goal> goals = new ArrayList<>();
+    /** File path for storing goal data */
     private static final String FILE_NAME = "invest_wise/goals.txt";
 
+    /**
+     * Constructs the financial goals window with input fields and goal management functionality.
+     * Initializes the UI components and sets up event handlers.
+     */
     public FinancialGoals() {
         // === FORM PANEL ===
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
@@ -91,6 +104,12 @@ public class FinancialGoals extends login_signup {
         listBtn.addActionListener(e -> listGoals());
     }
 
+    /**
+     * Loads goals for a specific user from the goals file.
+     *
+     * @param username The username to load goals for
+     * @return ArrayList of goals for the specified user
+     */
     public static ArrayList<Goal> loadGoals(String username) {
         ArrayList<Goal> loadedGoals = new ArrayList<>();
         File file = new File("invest_wise/goals.txt");
@@ -111,6 +130,10 @@ public class FinancialGoals extends login_signup {
         return loadedGoals;
     }
 
+    /**
+     * Saves a new goal to the goals file.
+     * Validates input fields and updates the goal list display.
+     */
     private void saveGoal() {
         String type = (String) goalTypeBox.getSelectedItem();
         String amountText = amountField.getText().trim();
@@ -169,7 +192,10 @@ public class FinancialGoals extends login_signup {
         }
     }
 
-
+    /**
+     * Displays the list of saved goals in the text area.
+     * Updates the display with current goals.
+     */
     private void listGoals() {
         if (goals.isEmpty()) {
             goalListArea.setText("No goals found.");
@@ -183,6 +209,11 @@ public class FinancialGoals extends login_signup {
         goalListArea.setText(sb.toString());
     }
 
+    /**
+     * Saves a goal to the goals file.
+     *
+     * @param goal The goal to save
+     */
     private void saveGoalToFile(Goal goal) {
         try (FileWriter fw = new FileWriter(FILE_NAME, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -193,6 +224,10 @@ public class FinancialGoals extends login_signup {
         }
     }
 
+    /**
+     * Loads goals from the goals file.
+     * Initializes the goals list with saved data.
+     */
     private void loadGoalsFromFile() {
         File file = new File(FILE_NAME);
         if (!file.exists()) return;
@@ -209,13 +244,29 @@ public class FinancialGoals extends login_signup {
             JOptionPane.showMessageDialog(this, "Error loading goals from file.");
         }
     }
-    // === Inner Goal Class ===
+
+    /**
+     * Inner class representing a financial goal.
+     * Stores goal type, target amount, deadline, and current progress.
+     */
     static class Goal {
+        /** The type of the goal (e.g., "Retirement", "Wealth Accumulation") */
         private String goalType;
+        /** The target amount to achieve */
         private double targetAmount;
+        /** The deadline for achieving the goal */
         private String deadline;
+        /** The current progress towards the goal */
         private double currentProgress;
 
+        /**
+         * Constructs a new Goal with the specified details.
+         *
+         * @param goalType The type of the goal
+         * @param targetAmount The target amount to achieve
+         * @param deadline The deadline for achieving the goal
+         * @param currentProgress The current progress towards the goal
+         */
         public Goal(String goalType, double targetAmount, String deadline, double currentProgress) {
             this.goalType = goalType;
             this.targetAmount = targetAmount;
@@ -223,6 +274,11 @@ public class FinancialGoals extends login_signup {
             this.currentProgress = currentProgress;
         }
 
+        /**
+         * Returns a formatted string representation of the goal.
+         *
+         * @return A formatted string showing the goal's details
+         */
         @Override
         public String toString() {
             return  "⇛" +
@@ -232,10 +288,21 @@ public class FinancialGoals extends login_signup {
                     ", Progress: $" + currentProgress;
         }
 
+        /**
+         * Converts the goal information to a CSV string format.
+         *
+         * @return A string representation of the goal in CSV format
+         */
         public String toCSV() {
             return goalType + ", " + targetAmount + ", " + deadline + ", " + currentProgress;
         }
 
+        /**
+         * Creates a Goal object from a CSV string.
+         *
+         * @param csv The CSV string containing goal information
+         * @return A new Goal object if the CSV is valid, null otherwise
+         */
         public static Goal fromCSV(String csv) {
             try {
                 String[] parts = csv.split(", ");

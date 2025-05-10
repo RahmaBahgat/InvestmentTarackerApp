@@ -7,36 +7,59 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
- * Home class represents the main dashboard of the InvestWise application.
- * It extends the styles class to inherit common styling methods and provides
- * a central interface for accessing various financial management features.
+ * The main dashboard of the InvestWise application.
+ * Provides access to various financial management features and displays user's assets.
  */
 public class Home extends styles {
-    // List to store all user assets, accessible throughout the application
+    /** List of user's financial assets */
     private ArrayList<Asset> assets = new ArrayList<>();
+    /** Layout manager for switching between different views */
+    private CardLayout cardLayout;
+    /** Main panel containing all card views */
+    private JPanel mainCardPanel;
+    /** Risk assessment screen component */
+    private RiskAssessmentScreen riskAssessmentScreen;
 
     /**
-     * Constructor for the Home class.
-     * Initializes the main window and sets up the user interface components.
+     * Constructs the home dashboard with navigation buttons and initializes the card layout.
+     * Sets up the main interface and risk assessment screen.
      */
     public Home() {
-        window(); // Initialize the main window from parent class
+        window();
+        setTitle("InvestWise - Home");
 
-        // === Main Panel Setup ===
-        // Create the main container panel with GridBagLayout for flexible component arrangement
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBackground(Color.decode("#f5efe7")); // Set light beige background
+        // Initialize card layout
+        cardLayout = new CardLayout();
+        mainCardPanel = new JPanel(cardLayout);
+        mainCardPanel.setBackground(Color.decode("#f5efe7"));
 
-        // Configure GridBagConstraints for component positioning
+        // Create home view
+        JPanel homeView = createHomeView();
+        mainCardPanel.add(homeView, "HOME");
+
+        riskAssessmentScreen = new RiskAssessmentScreen(this, this);
+        mainCardPanel.add(riskAssessmentScreen.getRiskPanel(), "RISK_ASSESSMENT");
+
+        add(mainCardPanel, BorderLayout.CENTER);
+    }
+
+    /**
+     * Creates the main home view panel with navigation buttons.
+     * Each button provides access to different financial management features.
+     *
+     * @return A JPanel containing the main navigation interface
+     */
+    private JPanel createHomeView() {
+        JPanel homePanel = new JPanel(new GridBagLayout());
+        homePanel.setBackground(Color.decode("#f5efe7"));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // === Navigation Buttons Creation ===
+        // === Buttons ===
         gbc.gridy = 2;
-        // Create buttons for different financial management features
         JButton financialButton = new JButton("Financial goals");
         JButton zakatButton = new JButton("Zakat Calculator");
         JButton stockButton = new JButton("Connect Stock Market");
@@ -45,7 +68,7 @@ public class Home extends styles {
         JButton editRemoveButton = new JButton("Edit/Remove Assets");
         JButton riskAssessmentButton = new JButton("Risk Assessment");
 
-        // Apply consistent styling to all buttons using inherited method
+        // Style buttons
         buttons(financialButton);
         buttons(zakatButton);
         buttons(stockButton);
@@ -54,64 +77,53 @@ public class Home extends styles {
         buttons(editRemoveButton);
         buttons(riskAssessmentButton);
 
-        // === Button Action Handlers ===
-        // Zakat Calculator button handler
+        // === Button Actions ===
         zakatButton.addActionListener(e -> {
             new ZakatCalculator(Home.this);
             setVisible(false);
         });
 
-        // Stock Market Connection button handler
         stockButton.addActionListener(e -> {
             new StockAccountConnection(Home.this);
             setVisible(false);
         });
 
-        // Reports and Insights button handler
         reportButton.addActionListener(e -> new ReportAndInsights(Home.this));
 
-        // Add Assets button handler
         addAssetsButton.addActionListener(e -> {
             this.setVisible(false);
-            new AddAssets(this, assets).setVisible(true);  // Pass both Home and assets
+            new AddAssets(this, assets).setVisible(true);
         });
 
-        // Edit/Remove Assets button handler
         editRemoveButton.addActionListener(e -> {
             this.setVisible(false);
             new EditRemoveAssets(this, assets).setVisible(true);
         });
 
-        // Risk Assessment button handler with validation
         riskAssessmentButton.addActionListener(e -> {
-            if (assets.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
+            if (!RiskAssessmentScreen.checkAssetsExist()) {
+                JOptionPane.showMessageDialog(Home.this,
                         "Please add assets first to assess risk",
                         "No Assets",
                         JOptionPane.WARNING_MESSAGE);
             } else {
-                setVisible(false);
-                new RiskAssessmentScreen(this, assets).setVisible(true);
+                riskAssessmentScreen.refreshData();
+                cardLayout.show(mainCardPanel, "RISK_ASSESSMENT");
+                setTitle("InvestWise - Risk Assessment");
             }
         });
 
-        // Financial Goals button handler
-        financialButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new FinancialGoals();
-                setVisible(false);
-            }
+        financialButton.addActionListener(e -> {
+            new FinancialGoals();
+            setVisible(false);
         });
 
-        // === Button Panel Setup ===
-        // Create a panel to hold all navigation buttons
+        // === Buttons Panel ===
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setPreferredSize(new Dimension(600, 400));
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10)); // Center alignment with spacing
-        buttonsPanel.setBackground(Color.decode("#f5efe7")); // Match main panel background
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonsPanel.setBackground(Color.decode("#f5efe7"));
 
-        // Add all buttons to the panel
         buttonsPanel.add(financialButton);
         buttonsPanel.add(zakatButton);
         buttonsPanel.add(stockButton);
@@ -120,18 +132,26 @@ public class Home extends styles {
         buttonsPanel.add(editRemoveButton);
         buttonsPanel.add(riskAssessmentButton);
 
-        // Add the buttons panel to the main panel
+        // Add buttonsPanel to homePanel
         gbc.gridy = 2;
-        mainPanel.add(buttonsPanel, gbc);
+        homePanel.add(buttonsPanel, gbc);
 
-        // === Final Window Setup ===
-        add(mainPanel, BorderLayout.CENTER);
+        return homePanel;
     }
 
     /**
-     * Updates the assets list with new data.
-     * This method is called when assets are modified in other screens.
-     * @param updatedAssets The new list of assets to replace the current list
+     * Switches the view back to the home screen.
+     * Updates the window title to reflect the current view.
+     */
+    public void showHomeView() {
+        cardLayout.show(mainCardPanel, "HOME");
+        setTitle("InvestWise - Home");
+    }
+
+    /**
+     * Updates the list of user's financial assets.
+     *
+     * @param updatedAssets The new list of assets to replace the current ones
      */
     public void updateAssets(ArrayList<Asset> updatedAssets) {
         this.assets = new ArrayList<>(updatedAssets);

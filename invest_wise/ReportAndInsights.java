@@ -7,10 +7,22 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Provides functionality for generating and displaying financial reports and insights.
+ * Shows financial goals, connected stock accounts, and allows report export.
+ */
 public class ReportAndInsights extends styles {
+    /** Text area for displaying the financial report */
     private JTextArea reportArea;
+    /** Currently logged in user's username */
     private String currentUser;
 
+    /**
+     * Constructs the report and insights window.
+     * Initializes the UI components and loads financial data.
+     *
+     * @param previousFrame The frame to return to when closing this window
+     */
     public ReportAndInsights(JFrame previousFrame) {
         currentUser = login_signup.getCurrentUser();
         if (currentUser == null || currentUser.isEmpty()) {
@@ -65,6 +77,10 @@ public class ReportAndInsights extends styles {
         setVisible(true);
     }
 
+    /**
+     * Loads and displays the financial report.
+     * Includes financial goals and connected stock accounts.
+     */
     private void loadAndDisplayReport() {
         StringBuilder sb = new StringBuilder();
 
@@ -104,6 +120,12 @@ public class ReportAndInsights extends styles {
         reportArea.setText(sb.toString());
     }
 
+    /**
+     * Generates and exports the financial report.
+     * Prompts user to save as PDF if confirmed.
+     *
+     * @param e The action event that triggered the report generation
+     */
     private void generateReport(ActionEvent e) {
         ArrayList<FinancialGoals.Goal> goals = FinancialGoals.loadGoals(currentUser);
 
@@ -117,7 +139,12 @@ public class ReportAndInsights extends styles {
         }
     }
 
-
+    /**
+     * Creates a styled button with consistent formatting.
+     *
+     * @param text The text to display on the button
+     * @return A configured JButton with standard styling
+     */
     private JButton styledButton(String text) {
         JButton button = new JButton(text);
         buttons(button);
