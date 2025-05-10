@@ -30,6 +30,7 @@ public class Home extends styles {
         JButton reportButton = new JButton("Report & Insights");
         JButton addAssetsButton = new JButton("Add Assets");
         JButton editRemoveButton = new JButton("Edit/Remove Assets");
+        JButton riskAssessmentButton = new JButton("Risk Assessment");
 
         // Style buttons
         buttons(financialButton);
@@ -38,6 +39,7 @@ public class Home extends styles {
         buttons(reportButton);
         buttons(addAssetsButton);
         buttons(editRemoveButton);
+        buttons(riskAssessmentButton);
 
         // === Button Actions ===
         zakatButton.addActionListener(e -> {
@@ -61,6 +63,17 @@ public class Home extends styles {
             this.setVisible(false);
             new EditRemoveAssets(this, assets).setVisible(true);
         });
+        riskAssessmentButton.addActionListener(e -> {
+            if (assets.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Please add assets first to assess risk",
+                        "No Assets",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                setVisible(false);
+                new RiskAssessmentScreen(this, assets).setVisible(true);
+            }
+        });
 
         financialButton.addActionListener(new ActionListener() {
             @Override
@@ -82,6 +95,8 @@ public class Home extends styles {
         buttonsPanel.add(reportButton);
         buttonsPanel.add(addAssetsButton);
         buttonsPanel.add(editRemoveButton);
+        buttonsPanel.add(riskAssessmentButton);
+
 
         // Add buttonsPanel to mainPanel
         gbc.gridy = 2;
