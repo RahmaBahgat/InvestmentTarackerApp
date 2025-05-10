@@ -2,6 +2,7 @@ package invest_wise;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import org.jfree.chart.*;
 import org.jfree.data.general.DefaultPieDataset;
@@ -12,32 +13,66 @@ public class RiskAssessmentScreen extends styles {
     private JButton backButton;
     private Home home;
     private ArrayList<Asset> assets;
+    private static final String ASSETS_FILE = "invest_wise/assets.txt";
 
-    public RiskAssessmentScreen(Home home, ArrayList<Asset> assets) {
+    public RiskAssessmentScreen(Home home) {
         this.home = home;
-        this.assets = assets;
+
+        // First check if assets file exists and has content
+        if (!checkAssetsExist()) {
+            JOptionPane.showMessageDialog(home,  // Use home as parent
+                    "Please add assets first to assess risk",
+                    "No Assets",
+                    JOptionPane.WARNING_MESSAGE);
+            return;  // Exit constructor without showing window
+        }
+
+        // Only proceed if assets exist
+        this.assets = loadAssetsFromFile();
+        initializeUI();
+    }
+
+    private boolean checkAssetsExist() {
+        File file = new File(ASSETS_FILE);
+        if (!file.exists() || file.length() == 0) {
+            return false;
+        }
+
+        // Quick check if file has valid content
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            return br.readLine() != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private void initializeUI() {
         window();
         setTitle("InvestWise - Risk Assessment");
+        createMainInterface();
+    }
 
+    private void createMainInterface() {
         riskPanel = new JPanel(new BorderLayout(10, 10));
         riskPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         riskPanel.setBackground(Color.decode("#f5efe7"));
 
-        // 1. Risk Score Display
+        // Risk score display
         int riskScore = calculateRiskScore();
         riskScoreLabel = new JLabel("Your Risk Score: " + riskScore + "/100", SwingConstants.CENTER);
         riskScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         riskScoreLabel.setForeground(getRiskColor(riskScore));
 
-        // 2. Graphical Breakdown
+        // Chart panel
         JPanel chartPanel = createRiskChart();
 
-        // 3. Mitigation Tips
+        // Tips area
         JTextArea tipsArea = new JTextArea(getMitigationTips(riskScore));
         tipsArea.setEditable(false);
         tipsArea.setLineWrap(true);
+        tipsArea.setWrapStyleWord(true);
 
-        // Back Button
+        // Back button
         backButton = new JButton("Back");
         buttons(backButton);
         backButton.addActionListener(e -> goBack());
@@ -51,12 +86,33 @@ public class RiskAssessmentScreen extends styles {
         add(riskPanel);
     }
 
+    private ArrayList<Asset> loadAssetsFromFile() {
+        ArrayList<Asset> loadedAssets = new ArrayList<>();
+        File file = new File(ASSETS_FILE);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Asset asset = Asset.fromCSV(line);
+                if (asset != null) {
+                    loadedAssets.add(asset);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error reading assets file",
+                    "File Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        return loadedAssets;
+    }
+
     private int calculateRiskScore() {
         if (assets.isEmpty()) return 0;
 
         double totalRisk = 0;
         for (Asset asset : assets) {
-            // Simple risk calculation (modify weights as needed)
             double assetRisk = switch (asset.type) {
                 case "Crypto" -> 0.9;
                 case "Stocks" -> 0.7;
