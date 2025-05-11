@@ -2,3 +2,4 @@ johnDoe123,securePass123,John Doe,john.doe@example.com,01012345678,1000
 janeSmith456,passWord!456,Jane Smith,jane.smith@example.com,01123456789,1500
 ahmed2025,AhmedPass#2025,Ahmed Ali,ahmed.ali@example.com,01234567890,2000
 maria_w,Password2023*,Maria Williams,maria.williams@example.com,01098765432,2500
+bassant,2005b*,bassant tarek,basant@x.com,01097921111111,340

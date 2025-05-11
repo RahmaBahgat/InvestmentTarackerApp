@@ -153,7 +153,7 @@ public class SignUpWindow extends login_signup {
      * @return true if the phone number format is valid, false otherwise
      */
     private boolean isValidPhone(String phone) {
-        return phone.startsWith("01") && phone.length() == 14 && phone.matches("\\d+");
+        return phone.startsWith("01") && phone.length() == 11 && phone.matches("\\d+");
     }
 
     /**
