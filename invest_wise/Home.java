@@ -26,12 +26,14 @@ public class Home extends styles {
      */
     public Home() {
         window();
-        setTitle("InvestWise - Home");
+        setTitle("Investa - Dashboard");
+        getContentPane().setBackground(Color.decode("#F5EFE7"));
 
         // Initialize card layout
         cardLayout = new CardLayout();
         mainCardPanel = new JPanel(cardLayout);
-        mainCardPanel.setBackground(Color.decode("#f5efe7"));
+        mainCardPanel.setBackground(Color.decode("#F5EFE7"));
+        mainCardPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
         // Create home view
         JPanel homeView = createHomeView();
@@ -41,6 +43,8 @@ public class Home extends styles {
         mainCardPanel.add(riskAssessmentScreen.getRiskPanel(), "RISK_ASSESSMENT");
 
         add(mainCardPanel, BorderLayout.CENTER);
+        setMinimumSize(new Dimension(900, 650));
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -50,93 +54,133 @@ public class Home extends styles {
      * @return A JPanel containing the main navigation interface
      */
     private JPanel createHomeView() {
-        JPanel homePanel = new JPanel(new GridBagLayout());
-        homePanel.setBackground(Color.decode("#f5efe7"));
+        JPanel homePanel = new JPanel(new BorderLayout());
+        homePanel.setBackground(Color.decode("#F5EFE7"));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
+        // Header Panel
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(Color.decode("#F5EFE7"));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
 
-        // === Buttons ===
-        gbc.gridy = 2;
-        JButton financialButton = new JButton("Financial goals");
-        JButton zakatButton = new JButton("Zakat Calculator");
-        JButton stockButton = new JButton("Connect Stock Market");
-        JButton reportButton = new JButton("Report & Insights");
-        JButton addAssetsButton = new JButton("Add Assets");
-        JButton editRemoveButton = new JButton("Edit/Remove Assets");
-        JButton riskAssessmentButton = new JButton("Risk Assessment");
+        JLabel titleLabel = new JLabel("Investa Dashboard");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(Color.decode("#213555"));
+        headerPanel.add(titleLabel);
 
-        // Style buttons
-        buttons(financialButton);
-        buttons(zakatButton);
-        buttons(stockButton);
-        buttons(reportButton);
-        buttons(addAssetsButton);
-        buttons(editRemoveButton);
-        buttons(riskAssessmentButton);
+        homePanel.add(headerPanel, BorderLayout.NORTH);
 
-        // === Button Actions ===
-        zakatButton.addActionListener(e -> {
-            new ZakatCalculator(Home.this);
-            setVisible(false);
-        });
+        // Main Buttons Panel
+        JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 25, 25));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
+        buttonsPanel.setBackground(Color.decode("#F5EFE7"));
 
-        stockButton.addActionListener(e -> {
-            new StockAccountConnection(Home.this);
-            setVisible(false);
-        });
+        // Create buttons
+        String[] buttonLabels = {
+                "Financial Goals", "Zakat Calculator",
+                "Stock Market", "Reports & Insights",
+                "Add Assets", "Manage Assets",
+                "Risk Assessment"
+        };
 
-        reportButton.addActionListener(e -> new ReportAndInsights(Home.this));
+        for (String label : buttonLabels) {
+            JButton button = createDashboardButton(label);
+            buttonsPanel.add(button);
 
-        addAssetsButton.addActionListener(e -> {
-            this.setVisible(false);
-            new AddAssets(this, assets).setVisible(true);
-        });
+            // Add button actions
+            switch (label) {
+                case "Zakat Calculator":
+                    button.addActionListener(e -> {
+                        new ZakatCalculator(Home.this);
+                        setVisible(false);
+                    });
+                    break;
+                case "Stock Market":
+                    button.addActionListener(e -> {
+                        new StockAccountConnection(Home.this);
+                        setVisible(false);
+                    });
+                    break;
+                case "Reports & Insights":
+                    button.addActionListener(e -> new ReportAndInsights(Home.this));
+                    break;
+                case "Add Assets":
+                    button.addActionListener(e -> {
+                        this.setVisible(false);
+                        new AddAssets(this, assets).setVisible(true);
+                    });
+                    break;
+                case "Manage Assets":
+                    button.addActionListener(e -> {
+                        this.setVisible(false);
+                        new EditRemoveAssets(this, assets).setVisible(true);
+                    });
+                    break;
+                case "Risk Assessment":
+                    button.addActionListener(e -> {
+                        if (!RiskAssessmentScreen.checkAssetsExist()) {
+                            JOptionPane.showMessageDialog(Home.this,
+                                    "Please add assets first to assess risk",
+                                    "No Assets",
+                                    JOptionPane.WARNING_MESSAGE);
+                        } else {
+                            riskAssessmentScreen.refreshData();
+                            cardLayout.show(mainCardPanel, "RISK_ASSESSMENT");
+                            setTitle("Investa - Risk Assessment");
+                        }
+                    });
+                    break;
+                case "Financial Goals":
+                    button.addActionListener(e -> {
+                        new FinancialGoals();
+                        setVisible(false);
+                    });
+                    break;
+            }
+        }
 
-        editRemoveButton.addActionListener(e -> {
-            this.setVisible(false);
-            new EditRemoveAssets(this, assets).setVisible(true);
-        });
+        homePanel.add(buttonsPanel, BorderLayout.CENTER);
 
-        riskAssessmentButton.addActionListener(e -> {
-            if (!RiskAssessmentScreen.checkAssetsExist()) {
-                JOptionPane.showMessageDialog(Home.this,
-                        "Please add assets first to assess risk",
-                        "No Assets",
-                        JOptionPane.WARNING_MESSAGE);
-            } else {
-                riskAssessmentScreen.refreshData();
-                cardLayout.show(mainCardPanel, "RISK_ASSESSMENT");
-                setTitle("InvestWise - Risk Assessment");
+        // Footer Panel
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBackground(Color.decode("#F5EFE7"));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+
+        JLabel footerLabel = new JLabel("© 2025 Investa. All rights reserved.");
+        footerLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        footerLabel.setForeground(Color.decode("#3E5879"));
+        footerPanel.add(footerLabel);
+
+        homePanel.add(footerPanel, BorderLayout.SOUTH);
+
+        return homePanel;
+    }
+
+    /**
+     * Creates a consistently styled dashboard button
+     */
+    private JButton createDashboardButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        button.setForeground(Color.WHITE);
+        button.setBackground(Color.decode("#3E5879"));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.decode("#213555"), 1),
+                BorderFactory.createEmptyBorder(12, 25, 12, 25)
+        ));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover effect
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(Color.decode("#213555"));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(Color.decode("#3E5879"));
             }
         });
 
-        financialButton.addActionListener(e -> {
-            new FinancialGoals();
-            setVisible(false);
-        });
-
-        // === Buttons Panel ===
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setPreferredSize(new Dimension(600, 400));
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonsPanel.setBackground(Color.decode("#f5efe7"));
-
-        buttonsPanel.add(financialButton);
-        buttonsPanel.add(zakatButton);
-        buttonsPanel.add(stockButton);
-        buttonsPanel.add(reportButton);
-        buttonsPanel.add(addAssetsButton);
-        buttonsPanel.add(editRemoveButton);
-        buttonsPanel.add(riskAssessmentButton);
-
-        // Add buttonsPanel to homePanel
-        gbc.gridy = 2;
-        homePanel.add(buttonsPanel, gbc);
-
-        return homePanel;
+        return button;
     }
 
     /**
@@ -145,7 +189,7 @@ public class Home extends styles {
      */
     public void showHomeView() {
         cardLayout.show(mainCardPanel, "HOME");
-        setTitle("InvestWise - Home");
+        setTitle("Investa - Dashboard");
     }
 
     /**
