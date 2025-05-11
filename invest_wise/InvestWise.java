@@ -44,12 +44,11 @@ public class InvestWise extends styles {
         mainPanel.add(subtitleLabel, gbc);
 
         // === Login Button ===
-        gbc.gridy = 2;  // Move the button below the welcome message
+        gbc.gridy = 2;
         JButton loginButton = new JButton("Login");
         loginButton.setPreferredSize(new Dimension(200, 50));
         buttons(loginButton);
 
-        // Add action to login button
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,7 +57,6 @@ public class InvestWise extends styles {
             }
         });
 
-        // Add the login button to the panel
         mainPanel.add(loginButton, gbc);
 
         // === Footer ===
@@ -70,14 +68,10 @@ public class InvestWise extends styles {
         gbc.weighty = 1.0;
         mainPanel.add(footerLabel, gbc);
 
-        // === Final Frame Setup ===
         add(mainPanel, BorderLayout.CENTER);
-        setMinimumSize(new Dimension(500, 400));
-        pack();
         setLocationRelativeTo(null);
     }
-
-    /**
+/**
      * The main method that launches the InvestWise application.
      * Uses SwingUtilities.invokeLater to ensure thread safety for GUI creation.
      *

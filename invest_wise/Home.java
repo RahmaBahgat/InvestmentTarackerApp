@@ -23,7 +23,7 @@ public class Home extends styles {
      * Sets up the main interface and risk assessment screen.
      */
     public Home() {
-        window();
+        window(); // Inherits size from styles class
         setTitle("Investa - Dashboard");
         getContentPane().setBackground(Color.decode("#F5EFE7"));
 
@@ -41,8 +41,7 @@ public class Home extends styles {
         mainCardPanel.add(riskAssessmentScreen.getRiskPanel(), "RISK_ASSESSMENT");
 
         add(mainCardPanel, BorderLayout.CENTER);
-        setMinimumSize(new Dimension(900, 650));
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); // Center window on screen
     }
 
     /**
@@ -67,12 +66,16 @@ public class Home extends styles {
 
         homePanel.add(headerPanel, BorderLayout.NORTH);
 
-        // Main Buttons Panel
-        JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 25, 25));
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
+        // Main Buttons Panel with centered Risk Assessment
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
         buttonsPanel.setBackground(Color.decode("#F5EFE7"));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
 
-        // Create buttons
+        // Grid for first 6 buttons (3 rows, 2 columns)
+        JPanel gridPanel = new JPanel(new GridLayout(3, 2, 25, 25));
+        gridPanel.setBackground(Color.decode("#F5EFE7"));
+
         String[] buttonLabels = {
                 "Financial Goals", "Zakat Calculator",
                 "Stock Market", "Reports & Insights",
@@ -80,63 +83,36 @@ public class Home extends styles {
                 "Risk Assessment"
         };
 
-        for (String label : buttonLabels) {
-            JButton button = createDashboardButton(label);
-            buttonsPanel.add(button);
-
-            // Add button actions
-            switch (label) {
-                case "Zakat Calculator":
-                    button.addActionListener(e -> {
-                        new ZakatCalculator(Home.this);
-                        setVisible(false);
-                    });
-                    break;
-                case "Stock Market":
-                    button.addActionListener(e -> {
-                        new StockAccountConnection(Home.this);
-                        setVisible(false);
-                    });
-                    break;
-                case "Reports & Insights":
-                    button.addActionListener(e -> new ReportAndInsights(Home.this));
-                    break;
-                case "Add Assets":
-                    button.addActionListener(e -> {
-                        this.setVisible(false);
-                        new AddAssets(this, assets).setVisible(true);
-                    });
-                    break;
-                case "Manage Assets":
-                    button.addActionListener(e -> {
-                        this.setVisible(false);
-                        new EditRemoveAssets(this, assets).setVisible(true);
-                    });
-                    break;
-                case "Risk Assessment":
-                    button.addActionListener(e -> {
-                        if (!RiskAssessmentScreen.checkAssetsExist()) {
-                            JOptionPane.showMessageDialog(Home.this,
-                                    "Please add assets first to assess risk",
-                                    "No Assets",
-                                    JOptionPane.WARNING_MESSAGE);
-                        } else {
-                            riskAssessmentScreen.refreshData();
-                            cardLayout.show(mainCardPanel, "RISK_ASSESSMENT");
-                            setTitle("Investa - Risk Assessment");
-                        }
-                    });
-                    break;
-                case "Financial Goals":
-                    button.addActionListener(e -> {
-                        new FinancialGoals();
-                        setVisible(false);
-                    });
-                    break;
-            }
+        // Add first 6 buttons to grid
+        for (int i = 0; i < 6; i++) {
+            JButton button = createDashboardButton(buttonLabels[i]);
+            gridPanel.add(button);
+            addButtonAction(button, buttonLabels[i]);
         }
 
-        homePanel.add(buttonsPanel, BorderLayout.CENTER);
+        buttonsPanel.add(gridPanel);
+        buttonsPanel.add(Box.createVerticalStrut(25));
+
+        // Centered Risk Assessment button
+        JPanel riskPanel = new JPanel();
+        riskPanel.setBackground(Color.decode("#F5EFE7"));
+        riskPanel.setLayout(new BoxLayout(riskPanel, BoxLayout.X_AXIS));
+        riskPanel.add(Box.createHorizontalGlue());
+
+        JButton riskButton = createDashboardButton(buttonLabels[6]);
+        riskButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        riskPanel.add(riskButton);
+        riskPanel.add(Box.createHorizontalGlue());
+
+        buttonsPanel.add(riskPanel);
+        addButtonAction(riskButton, buttonLabels[6]);
+
+        // Center the buttons panel
+        JPanel centerWrapper = new JPanel(new GridBagLayout());
+        centerWrapper.setBackground(Color.decode("#F5EFE7"));
+        centerWrapper.add(buttonsPanel);
+
+        homePanel.add(centerWrapper, BorderLayout.CENTER);
 
         // Footer Panel
         JPanel footerPanel = new JPanel();
@@ -154,6 +130,61 @@ public class Home extends styles {
     }
 
     /**
+     * Helper method to add actions to buttons
+     */
+    private void addButtonAction(JButton button, String label) {
+        switch (label) {
+            case "Zakat Calculator":
+                button.addActionListener(e -> {
+                    new ZakatCalculator(Home.this);
+                    setVisible(false);
+                });
+                break;
+            case "Stock Market":
+                button.addActionListener(e -> {
+                    new StockAccountConnection(Home.this);
+                    setVisible(false);
+                });
+                break;
+            case "Reports & Insights":
+                button.addActionListener(e -> new ReportAndInsights(Home.this));
+                break;
+            case "Add Assets":
+                button.addActionListener(e -> {
+                    this.setVisible(false);
+                    new AddAssets(this, assets).setVisible(true);
+                });
+                break;
+            case "Manage Assets":
+                button.addActionListener(e -> {
+                    this.setVisible(false);
+                    new EditRemoveAssets(this, assets).setVisible(true);
+                });
+                break;
+            case "Risk Assessment":
+                button.addActionListener(e -> {
+                    if (!RiskAssessmentScreen.checkAssetsExist()) {
+                        JOptionPane.showMessageDialog(Home.this,
+                                "Please add assets first to assess risk",
+                                "No Assets",
+                                JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        riskAssessmentScreen.refreshData();
+                        cardLayout.show(mainCardPanel, "RISK_ASSESSMENT");
+                        setTitle("Investa - Risk Assessment");
+                    }
+                });
+                break;
+            case "Financial Goals":
+                button.addActionListener(e -> {
+                    new FinancialGoals();
+                    setVisible(false);
+                });
+                break;
+        }
+    }
+
+    /**
      * Creates a consistently styled dashboard button
      */
     private JButton createDashboardButton(String text) {
@@ -167,6 +198,7 @@ public class Home extends styles {
                 BorderFactory.createEmptyBorder(12, 25, 12, 25)
         ));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setPreferredSize(new Dimension(200, 50));
 
         // Hover effect
         button.addMouseListener(new java.awt.event.MouseAdapter() {
