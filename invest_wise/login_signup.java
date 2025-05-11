@@ -10,7 +10,7 @@ import java.io.*;
  */
 class login_signup extends styles {
     /** File path for storing user data */
-    static final String USERS_FILE = "invest_wise/users.txt";
+    static final String USERS_FILE = "invest_wise/users";
     /** Currently logged in user's username */
     private static String currentUser = "";
 

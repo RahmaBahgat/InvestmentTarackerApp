@@ -95,7 +95,7 @@ public class ResetPasswordWindow extends login_signup {
      */
     void updatePassword(String username, String newPassword) {
         File inputFile = new File(USERS_FILE);
-        File tempFile = new File("invest_wise/users.txt");
+        File tempFile = new File("invest_wise/users_temp.txt");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
