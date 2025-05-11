@@ -97,6 +97,17 @@ public class RiskAssessmentScreen {
         riskScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         riskScoreLabel.setForeground(getRiskColor(riskScore));
 
+        // Risk advice display
+        JLabel riskAdviceLabel = new JLabel(getRiskAdvice(riskScore), SwingConstants.CENTER);
+        riskAdviceLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        riskAdviceLabel.setForeground(Color.DARK_GRAY);
+
+        // Panel for score and advice
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(Color.decode("#f5efe7"));
+        headerPanel.add(riskScoreLabel, BorderLayout.NORTH);
+        headerPanel.add(riskAdviceLabel, BorderLayout.SOUTH);
+
         // Chart panel
         JPanel chartPanel = createRiskChart();
 
@@ -112,7 +123,7 @@ public class RiskAssessmentScreen {
         backButton.addActionListener(e -> home.showHomeView());
 
         // Layout
-        riskPanel.add(riskScoreLabel, BorderLayout.NORTH);
+        riskPanel.add(headerPanel, BorderLayout.NORTH);
         riskPanel.add(chartPanel, BorderLayout.CENTER);
         riskPanel.add(new JScrollPane(tipsArea), BorderLayout.SOUTH);
         riskPanel.add(backButton, BorderLayout.PAGE_END);
@@ -215,5 +226,17 @@ public class RiskAssessmentScreen {
         if (score > 70) return Color.RED;
         else if (score > 40) return Color.ORANGE;
         else return Color.GREEN;
+    }
+
+    /**
+     * Provides advice based on the risk score.
+     *
+     * @param score The calculated risk score
+     * @return String containing portfolio risk advice
+     */
+    private String getRiskAdvice(int score) {
+        if (score > 70) return "Aggressive portfolio - Potential for high returns but also high volatility";
+        else if (score > 40) return "Balanced portfolio - Moderate growth with manageable risk";
+        else return "Conservative portfolio - Stable but with lower growth potential";
     }
 }
