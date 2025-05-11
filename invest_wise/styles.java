@@ -98,4 +98,25 @@ public class styles extends JFrame{
         b.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
+
+    /**
+     * Creates a styled button with consistent formatting.
+     *
+     * @param text The text to display on the button
+     * @return A configured JButton with standard styling
+     */
+    public JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
+        button.setBackground(Color.decode("#3e5879"));
+        button.setForeground(Color.decode("#f5efe7"));
+        button.setPreferredSize(new Dimension(200, 50));
+        button.setMaximumSize(new Dimension(200, 50));
+        button.setFocusPainted(false);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
 }

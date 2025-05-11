@@ -10,7 +10,7 @@ import java.io.*;
  */
 class login_signup extends styles {
     /** File path for storing user data */
-    private static final String USERS_FILE = "invest_wise/users.txt";
+    static final String USERS_FILE = "invest_wise/users.txt";
     /** Currently logged in user's username */
     private static String currentUser = "";
 
@@ -123,26 +123,6 @@ class login_signup extends styles {
         return inputPanel;
     }
 
-    /**
-     * Creates a styled button with consistent formatting.
-     *
-     * @param text The text to display on the button
-     * @return A configured JButton with standard styling
-     */
-    public JButton styledButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
-        button.setBackground(Color.decode("#3e5879"));
-        button.setForeground(Color.decode("#f5efe7"));
-        button.setPreferredSize(new Dimension(200, 50));
-        button.setMaximumSize(new Dimension(200, 50));
-        button.setFocusPainted(false);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return button;
-    }
-
     // === File Operations ===
 
     /**
@@ -202,41 +182,6 @@ class login_signup extends styles {
             writer.newLine();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error writing to file.");
-        }
-    }
-
-    /**
-     * Updates a user's password in the user database.
-     *
-     * @param username The username of the user whose password to update
-     * @param newPassword The new password to set
-     */
-    void updatePassword(String username, String newPassword) {
-        File inputFile = new File(USERS_FILE);
-        File tempFile = new File("src/invest_wise/temp_users.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] creds = line.split(",");
-                if (creds[0].equals(username)) {
-                    creds[1] = newPassword; // update only the password
-                    writer.write(String.join(",", creds));
-                } else {
-                    writer.write(line);
-                }
-                writer.newLine();
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error updating password.");
-            return;
-        }
-
-        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
-            JOptionPane.showMessageDialog(this, "Failed to save updated password.");
         }
     }
 

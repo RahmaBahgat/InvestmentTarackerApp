@@ -145,9 +145,4 @@ public class ReportAndInsights extends styles {
      * @param text The text to display on the button
      * @return A configured JButton with standard styling
      */
-    private JButton styledButton(String text) {
-        JButton button = new JButton(text);
-        buttons(button);
-        return button;
-    }
 }

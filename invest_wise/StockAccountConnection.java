@@ -127,16 +127,4 @@ public class StockAccountConnection extends styles {
             JOptionPane.showMessageDialog(this, "Failed to save account information.");
         }
     }
-
-    /**
-     * Creates a styled button with consistent formatting.
-     *
-     * @param text The text to display on the button
-     * @return A configured JButton with standard styling
-     */
-    private JButton styledButton(String text) {
-        JButton button = new JButton(text);
-        buttons(button); // From styles.java
-        return button;
-    }
 }

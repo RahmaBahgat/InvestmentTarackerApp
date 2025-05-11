@@ -2,6 +2,7 @@ package invest_wise;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 
 /**
  * Provides functionality for resetting user passwords.
@@ -84,5 +85,40 @@ public class ResetPasswordWindow extends login_signup {
 
         add(centerWrapper, BorderLayout.CENTER);
         setVisible(true);
+    }
+
+    /**
+     * Updates a user's password in the user database.
+     *
+     * @param username The username of the user whose password to update
+     * @param newPassword The new password to set
+     */
+    void updatePassword(String username, String newPassword) {
+        File inputFile = new File(USERS_FILE);
+        File tempFile = new File("invest_wise/users.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] creds = line.split(",");
+                if (creds[0].equals(username)) {
+                    creds[1] = newPassword; // update only the password
+                    writer.write(String.join(",", creds));
+                } else {
+                    writer.write(line);
+                }
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error updating password.");
+            return;
+        }
+
+        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
+            JOptionPane.showMessageDialog(this, "Failed to save updated password.");
+        }
     }
 }

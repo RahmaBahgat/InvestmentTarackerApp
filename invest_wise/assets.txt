@@ -1,1 +1,2 @@
 Crypto,test,1234.0
+Gold,sdf,345.0

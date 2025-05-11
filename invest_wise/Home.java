@@ -24,7 +24,6 @@ public class Home extends styles {
      */
     public Home() {
         window(); // Inherits size from styles class
-        setTitle("Investa - Dashboard");
         getContentPane().setBackground(Color.decode("#F5EFE7"));
 
         // Initialize card layout

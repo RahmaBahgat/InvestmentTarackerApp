@@ -96,18 +96,6 @@ public class ZakatCalculator extends styles {
     }
 
     /**
-     * Creates a styled button with consistent formatting.
-     *
-     * @param text The text to display on the button
-     * @return A configured JButton with standard styling
-     */
-    private JButton styledButton(String text) {
-        JButton button = new JButton(text);
-        buttons(button); // Call inherited method from styles class
-        return button;
-    }
-
-    /**
      * Calculates Zakat based on the input asset values.
      * Computes total assets and applies the 2.5% Zakat rate.
      *

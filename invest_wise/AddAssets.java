@@ -46,9 +46,9 @@ public class AddAssets extends styles {
      * @param assets List of existing assets
      */
     public AddAssets(Home home, ArrayList<Asset> assets) {
+        this.window();
         this.home = home;
         this.assets = assets;
-        this.window();
         loadAssetsFromFile(); // Load assets from file on startup
 
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -56,11 +56,24 @@ public class AddAssets extends styles {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // === FORM PANEL ===
-        JPanel formPanel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 15, 15));  // 3 rows, 2 columns
         formPanel.setBackground(Color.decode("#f5efe7"));
 
         Font labelFont = new Font("Segoe UI Emoji", Font.PLAIN, 16);
         Color labelColor = Color.decode("#3e5879");
+
+        // Create styled labels
+        JLabel typeLabel = new JLabel("Select Asset Type:");
+        typeLabel.setFont(labelFont);
+        typeLabel.setForeground(labelColor);
+
+        JLabel nameLabel = new JLabel("Enter Asset Name:");
+        nameLabel.setFont(labelFont);
+        nameLabel.setForeground(labelColor);
+
+        JLabel valueLabel = new JLabel("Enter Asset Value:");
+        valueLabel.setFont(labelFont);
+        valueLabel.setForeground(labelColor);
 
         // Form components
         assetTypeCombo = new JComboBox<>(new String[]{"Stocks", "Real Estate", "Crypto", "Gold", "Bonds", "Mutual Funds"});
@@ -82,29 +95,18 @@ public class AddAssets extends styles {
             }
         });
 
-        // Add form components with styled labels
-        addStyledLabel(formPanel, "Select Asset Type:", labelFont, labelColor);
+        // Add label-field pairs
+        formPanel.add(typeLabel);
         formPanel.add(assetTypeCombo);
-        addStyledLabel(formPanel, "Enter Asset Name:", labelFont, labelColor);
+        formPanel.add(nameLabel);
         formPanel.add(assetNameField);
-        addStyledLabel(formPanel, "Enter Asset Value:", labelFont, labelColor);
+        formPanel.add(valueLabel);
         formPanel.add(assetValueField);
 
         // === FORM WRAPPER ===
         JPanel formWrapper = new JPanel(new GridBagLayout());
         formWrapper.setBackground(Color.decode("#f5efe7"));
         formWrapper.add(formPanel);
-
-        // === BUTTON PANEL ===
-        addButton = createStyledButton("Add Asset");
-        clearButton = createStyledButton("Clear All");
-        backButton = createStyledButton("Back");
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(Color.decode("#f5efe7"));
-        buttonPanel.add(backButton);
-        buttonPanel.add(addButton);
-        buttonPanel.add(clearButton);
 
         // === ASSET LIST AREA ===
         assetListArea = new JTextArea();
@@ -136,15 +138,27 @@ public class AddAssets extends styles {
         JPanel centerPanel = new JPanel(new BorderLayout(10, 20));
         centerPanel.setBackground(Color.decode("#f5efe7"));
         centerPanel.add(formWrapper, BorderLayout.NORTH);
-        centerPanel.add(buttonPanel, BorderLayout.CENTER);
         centerPanel.add(messagePanel, BorderLayout.SOUTH);
 
-        // === MAIN LAYOUT ===
+        // === BUTTON PANEL ===
+        addButton = styledButton("Add Asset");
+        clearButton = styledButton("Clear All");
+        backButton = styledButton("Back");
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.setBackground(Color.decode("#f5efe7"));
+        buttonPanel.add(backButton);
+        buttonPanel.add(addButton);
+        buttonPanel.add(clearButton);
+
+        // === MAIN PANEL LAYOUT ===
         mainPanel.add(centerPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH); // Buttons at the bottom
+
         add(mainPanel, BorderLayout.CENTER);
 
-        // Event listeners
+        // === EVENT LISTENERS ===
         addButton.addActionListener(e -> {
             addAsset();
             saveAssetsToFile();
@@ -206,22 +220,6 @@ public class AddAssets extends styles {
         } catch (IOException e) {
             showMessage("Error saving assets to file.", Color.RED);
         }
-    }
-
-    /**
-     * Creates a styled button with consistent formatting.
-     *
-     * @param text The text to display on the button
-     * @return A configured JButton with standard styling
-     */
-    private JButton createStyledButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
-        button.setBackground(Color.decode("#3e5879"));
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        return button;
     }
 
     /**
