@@ -27,7 +27,7 @@ public class FinancialGoals extends login_signup {
      */
     public FinancialGoals() {
         // === FORM PANEL ===
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         formPanel.setBackground(Color.decode("#f5efe7"));
 
         Font labelFont = new Font("Segoe UI Emoji", Font.PLAIN, 16);
@@ -39,7 +39,7 @@ public class FinancialGoals extends login_signup {
         formPanel.add(goalLabel);
 
         goalTypeBox = new JComboBox<>(new String[]{"Retirement", "Wealth Accumulation"});
-        goalTypeBox.setPreferredSize(new Dimension(200, 10));
+        goalTypeBox.setPreferredSize(new Dimension(200, 30));
         formPanel.add(goalTypeBox);
 
         JLabel amountLabel = new JLabel("Target Amount:");
@@ -69,11 +69,6 @@ public class FinancialGoals extends login_signup {
         progressField.setPreferredSize(new Dimension(200, 10));
         formPanel.add(progressField);
 
-        JButton saveBtn = styledButton("Save Goal");
-        JButton listBtn = styledButton("List Goals");
-        formPanel.add(saveBtn);
-        formPanel.add(listBtn);
-
         // === FORM WRAPPER ===
         JPanel formWrapper = new JPanel(new GridBagLayout());
         formWrapper.setBackground(Color.decode("#f5efe7"));
@@ -85,23 +80,42 @@ public class FinancialGoals extends login_signup {
         goalListArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         goalListArea.setLineWrap(true);
         goalListArea.setWrapStyleWord(true);
+        goalListArea.setPreferredSize(new Dimension(300, 100));
 
         JScrollPane scrollPane = new JScrollPane(goalListArea);
+        scrollPane.setPreferredSize(new Dimension(300, 100));
         scrollPane.setBorder(BorderFactory.createTitledBorder("Saved Goals"));
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        // === BUTTON PANEL ===
+        JButton saveBtn = styledButton("Save Goal");
+        JButton listBtn = styledButton("List Goals");
+        JButton backBtn = styledButton("Back");
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.setPreferredSize(new Dimension(800, 100));
+        buttonPanel.setBackground(Color.decode("#f5efe7"));
+        buttonPanel.add(saveBtn);
+        buttonPanel.add(listBtn);
+        buttonPanel.add(backBtn);
 
         // === MAIN PANEL ===
         JPanel mainPanel = createStyledPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(formWrapper, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH); // Buttons at bottom
 
         add(mainPanel, BorderLayout.CENTER);
 
-        // Load + Button Events
+        // === EVENTS ===
         loadGoalsFromFile();
         saveBtn.addActionListener(e -> saveGoal());
         listBtn.addActionListener(e -> listGoals());
+        backBtn.addActionListener(e -> {
+            new Home();
+            dispose();
+        });
     }
 
     /**

@@ -86,7 +86,7 @@ class login_signup extends styles {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.decode("#f5efe7"));
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 70, 30, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 10));
         return panel;
     }
 
