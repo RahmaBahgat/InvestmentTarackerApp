@@ -1,9 +1,6 @@
 package invest_wise;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * The main entry point for the InvestWise application.
@@ -17,19 +14,18 @@ public class InvestWise extends styles {
      */
     public InvestWise() {
         window();
-        // === Main Panel ===
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
+
+        // === MAIN CONTENT PANEL ===
+        JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(Color.decode("#f5efe7"));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // === App Title ===
+        // === Title ===
         JLabel titleLabel = new JLabel("Investa");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
         titleLabel.setForeground(Color.decode("#2c3e50"));
@@ -44,19 +40,14 @@ public class InvestWise extends styles {
         mainPanel.add(subtitleLabel, gbc);
 
         // === Login Button ===
-        gbc.gridy = 2;
         JButton loginButton = new JButton("Login");
         loginButton.setPreferredSize(new Dimension(200, 50));
         buttons(loginButton);
-
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new login_signup();
-                setVisible(false);
-            }
+        loginButton.addActionListener(e -> {
+            new login_signup();
+            setVisible(false);
         });
-
+        gbc.gridy = 2;
         mainPanel.add(loginButton, gbc);
 
         // === Footer ===
@@ -64,12 +55,15 @@ public class InvestWise extends styles {
         footerLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         footerLabel.setForeground(Color.decode("#95a5a6"));
         gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.SOUTH;
-        gbc.weighty = 1.0;
         mainPanel.add(footerLabel, gbc);
 
-        add(mainPanel, BorderLayout.CENTER);
-        setLocationRelativeTo(null);
+        // === WRAPPER PANEL FOR CENTERING ===
+        JPanel wrapper = new JPanel(new GridBagLayout()); // This will truly center everything
+        wrapper.setBackground(Color.decode("#f5efe7"));
+        wrapper.add(mainPanel); // Centered content
+
+        add(wrapper, BorderLayout.CENTER); // Add wrapper to the center of the frame
+        setLocationRelativeTo(null); // Center window on screen
     }
 /**
      * The main method that launches the InvestWise application.
